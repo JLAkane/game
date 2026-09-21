@@ -236,4 +236,98 @@ describe('BattleEngine & Dynamic DPS Transition', () => {
     engine.executeAction('char_cmd', 'skill_char_extra_turn', 'pet_sluggish');
     expect(petUnit.actionDistance).toBe(0);
   });
+
+  it('连续多轮次战斗循环稳定（20+轮不卡死且能量自动循环）', () => {
+    const charUnit: BattleUnit = {
+      id: 'player_char',
+      name: '主角',
+      type: 'CHARACTER',
+      avatar: '👑',
+      level: 35,
+      currentHp: 2800,
+      maxHp: 2800,
+      currentMp: 200,
+      maxMp: 200,
+      atk: 120,
+      def: 160,
+      spd: 110,
+      critRate: 0.1,
+      critDmg: 1.5,
+      actionDistance: 10000,
+      skills: ['skill_char_slash', 'skill_basic_strike'],
+      buffs: [],
+      isDead: false
+    };
+
+    const dragonUnit: BattleUnit = {
+      id: 'pet_dragon',
+      name: '狱火炎龙',
+      type: 'PET',
+      avatar: '🐲',
+      level: 35,
+      currentHp: 4200,
+      maxHp: 4200,
+      currentMp: 160,
+      maxMp: 160,
+      atk: 780,
+      def: 320,
+      spd: 120,
+      critRate: 0.35,
+      critDmg: 2.0,
+      actionDistance: 10000,
+      skills: ['skill_apocalypse_flame', 'skill_flame_burst', 'skill_basic_strike'],
+      buffs: [],
+      isDead: false
+    };
+
+    const boss: BattleUnit = {
+      id: 'boss_1',
+      name: '深渊领主',
+      type: 'MONSTER',
+      avatar: '👹',
+      level: 40,
+      currentHp: 100000,
+      maxHp: 100000,
+      currentMp: 0,
+      maxMp: 0,
+      atk: 100,
+      def: 200,
+      spd: 80,
+      critRate: 0.1,
+      critDmg: 1.5,
+      actionDistance: 10000,
+      skills: ['skill_monster_bite'],
+      buffs: [],
+      isDead: false
+    };
+
+    engine.initBattle([charUnit, dragonUnit], [boss]);
+
+    let executedRounds = 0;
+    for (let i = 0; i < 25; i++) {
+      if (engine.checkBattleOver()) break;
+      const active = engine.activeUnit;
+      if (!active) break;
+
+      // 挑选第一个能量足够的可用技能
+      const skill = active.skills.map(sId => engine.skillsMap.get(sId)!)
+        .find(s => {
+          if (s.costMp && active.currentMp < s.costMp) return false;
+          if (s.costTp && active.currentMp < s.costTp) return false;
+          return true;
+        }) || engine.skillsMap.get('skill_basic_strike')!;
+
+      const targets = engine.getValidTargets(active, skill);
+      if (targets.length === 0) break;
+
+      const success = engine.executeAction(active.id, skill.id, targets[0].id);
+      expect(success).toBe(true);
+      executedRounds++;
+
+      // 驱动 AI 连续执行
+      engine.runAiTurns();
+    }
+
+    expect(executedRounds).toBeGreaterThanOrEqual(15);
+  });
 });

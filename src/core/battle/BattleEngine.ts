@@ -23,15 +23,21 @@ export class BattleEngine {
     this.turnCount = 0;
     this.status = 'IN_PROGRESS';
 
-    // 初始化行动距离
+    // 初始化行动距离，并注入基础普攻兜底
     [...this.playerTeam, ...this.enemyTeam].forEach(unit => {
       unit.actionDistance = 10000;
       unit.buffs = [];
       unit.isDead = false;
+      if (!unit.skills.includes('skill_basic_strike')) {
+        unit.skills.push('skill_basic_strike');
+      }
     });
 
     this.addLog('系统', '战斗开始！', 'INFO');
     this.advanceToNextTurn();
+
+    // 如果先手是敌方，自动执行敌方行动直至玩家回合
+    this.runAiTurns();
   }
 
   /**
@@ -61,6 +67,11 @@ export class BattleEngine {
     const readyUnit = aliveUnits.find(u => u.actionDistance <= 0.001) || aliveUnits[0];
     this.activeUnit = readyUnit;
     this.turnCount++;
+
+    // 回合开始时：存活单位自然回复 +10 MP/TP
+    if (!readyUnit.isDead) {
+      readyUnit.currentMp = Math.min(readyUnit.maxMp, readyUnit.currentMp + 10);
+    }
 
     return readyUnit;
   }
@@ -208,6 +219,28 @@ export class BattleEngine {
           }
           break;
         }
+
+        case 'HEAL': {
+          const targets = skill.targetType === 'ALL_ALLIES' 
+            ? (this.isPlayerSide(actor) ? this.playerTeam : this.enemyTeam).filter(u => !u.isDead)
+            : [target!];
+
+          targets.forEach(t => {
+            let statVal = actor.atk;
+            if (effect.scalingStat === 'DEF') statVal = actor.def;
+            const healAmount = Math.max(10, Math.round((effect.baseFlat || 0) + statVal * (effect.multiplier || 1.0)));
+            t.currentHp = Math.min(t.maxHp, t.currentHp + healAmount);
+            this.addLog(actor.name, `施展【${skill.name}】为 [${t.name}] 回复了 ${healAmount} 点生命！`, 'HEAL', t.name);
+          });
+          break;
+        }
+
+        case 'RESTORE_ENERGY': {
+          const energyVal = effect.value || 20;
+          actor.currentMp = Math.min(actor.maxMp, actor.currentMp + energyVal);
+          this.addLog(actor.name, `普通攻击命中目标，战意高昂回复了 ${energyVal} 点 MP/TP！`, 'BUFF');
+          break;
+        }
       }
     });
 
@@ -223,6 +256,77 @@ export class BattleEngine {
     }
 
     return true;
+  }
+
+  /**
+   * 获取指定技能的所有合法可选目标
+   */
+  public getValidTargets(actor: BattleUnit, skill: SkillConfig): BattleUnit[] {
+    const isPlayer = this.isPlayerSide(actor);
+    const friendlyTeam = isPlayer ? this.playerTeam : this.enemyTeam;
+    const opposingTeam = isPlayer ? this.enemyTeam : this.playerTeam;
+
+    switch (skill.targetType) {
+      case 'SELF':
+        return [actor];
+      case 'SINGLE_ALLY':
+        return friendlyTeam.filter(u => !u.isDead);
+      case 'ALLY_PET':
+        return friendlyTeam.filter(u => !u.isDead && u.type === 'PET');
+      case 'ALL_ALLIES':
+        return friendlyTeam.filter(u => !u.isDead);
+      case 'SINGLE_ENEMY':
+        return opposingTeam.filter(u => !u.isDead);
+      case 'ALL_ENEMIES':
+        return opposingTeam.filter(u => !u.isDead);
+      default:
+        return opposingTeam.filter(u => !u.isDead);
+    }
+  }
+
+  /**
+   * 执行敌方 AI 单次行动
+   */
+  public executeEnemyAction(enemy: BattleUnit): boolean {
+    if (enemy.isDead) return false;
+
+    // 挑选可用且能量充足的技能，不足则降级为基础普攻
+    let skillId = enemy.skills.find(sId => {
+      const s = this.skillsMap.get(sId);
+      if (!s) return false;
+      if (s.costMp && enemy.currentMp < s.costMp) return false;
+      return true;
+    }) || 'skill_basic_strike';
+
+    let skill = this.skillsMap.get(skillId) || this.skillsMap.get('skill_basic_strike');
+    if (!skill) return false;
+
+    const validTargets = this.getValidTargets(enemy, skill);
+    if (validTargets.length === 0) {
+      enemy.actionDistance = 10000;
+      this.advanceToNextTurn();
+      return true;
+    }
+
+    // AI 目标选择策略：优先攻击存活目标
+    const target = validTargets[Math.floor(Math.random() * validTargets.length)];
+    return this.executeAction(enemy.id, skill.id, target.id);
+  }
+
+  /**
+   * 自动推进所有连贯的敌方回合，直至轮到玩家行动或战斗结束
+   */
+  public runAiTurns(): void {
+    let safety = 0;
+    while (this.activeUnit && !this.isPlayerSide(this.activeUnit) && !this.checkBattleOver() && safety < 30) {
+      safety++;
+      const currentEnemy = this.activeUnit;
+      const success = this.executeEnemyAction(currentEnemy);
+      if (!success) {
+        currentEnemy.actionDistance = 10000;
+        this.advanceToNextTurn();
+      }
+    }
   }
 
   private tickBuffs(unit: BattleUnit): void {

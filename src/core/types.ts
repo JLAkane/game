@@ -53,6 +53,7 @@ export interface PetInstance {
 }
 
 export type SkillType = 'ACTIVE' | 'PASSIVE' | 'COMMAND';
+export type SkillCategory = 'DAMAGE' | 'HEAL' | 'BUFF' | 'DEBUFF' | 'COMMAND';
 export type TargetType = 'SELF' | 'SINGLE_ENEMY' | 'ALL_ENEMIES' | 'SINGLE_ALLY' | 'ALL_ALLIES' | 'ALLY_PET';
 
 export type EffectType = 
@@ -62,7 +63,8 @@ export type EffectType =
   | 'OVERLOAD' 
   | 'EXTRA_TURN' 
   | 'THORNS_AURA' 
-  | 'HEAL';
+  | 'HEAL'
+  | 'RESTORE_ENERGY';
 
 export interface SkillEffect {
   type: EffectType;
@@ -80,6 +82,7 @@ export interface SkillConfig {
   name: string;
   desc: string;
   type: SkillType;
+  category: SkillCategory;
   targetType: TargetType;
   costTp?: number; // 角色战术点
   costMp?: number; // 宠物魔法值
