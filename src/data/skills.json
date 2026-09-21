@@ -1,0 +1,210 @@
+[
+  {
+    "id": "skill_char_slash",
+    "name": "重装轰斩",
+    "desc": "角色挥舞重武对单体造成高额物理伤害。前期主要输出手段。",
+    "type": "ACTIVE",
+    "targetType": "SINGLE_ENEMY",
+    "costTp": 0,
+    "rarity": "COMMON",
+    "inheritRate": 0,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 1.5, "baseFlat": 160 }
+    ]
+  },
+  {
+    "id": "skill_char_cleave",
+    "name": "旋风横扫",
+    "desc": "角色对敌方全体造成范围挥砍伤害。",
+    "type": "ACTIVE",
+    "targetType": "ALL_ENEMIES",
+    "costTp": 20,
+    "rarity": "COMMON",
+    "inheritRate": 0,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 1.0, "baseFlat": 100 }
+    ]
+  },
+  {
+    "id": "skill_char_overload",
+    "name": "战术超载指令",
+    "desc": "指挥指令：选定1只主力宠物，消耗其10%当前生命，使其本回合攻击暴增150%且必定暴击！",
+    "type": "COMMAND",
+    "targetType": "ALLY_PET",
+    "costTp": 35,
+    "rarity": "EPIC",
+    "inheritRate": 0,
+    "effects": [
+      { "type": "OVERLOAD", "statPercent": 1.5, "turns": 1 }
+    ]
+  },
+  {
+    "id": "skill_char_vulnerability",
+    "name": "弱点指示标记",
+    "desc": "指挥指令：角色自身不造成伤害，但给目标附加弱点，使其受到宠物的单体技能伤害提升150%。",
+    "type": "COMMAND",
+    "targetType": "SINGLE_ENEMY",
+    "costTp": 25,
+    "rarity": "RARE",
+    "inheritRate": 0,
+    "effects": [
+      { "type": "VULNERABILITY", "value": 1.5, "turns": 2 }
+    ]
+  },
+  {
+    "id": "skill_char_extra_turn",
+    "name": "战术再动号令",
+    "desc": "指挥指令：牺牲自身回合，命令指定宠物立即无视行动轴再次行动一次！",
+    "type": "COMMAND",
+    "targetType": "ALLY_PET",
+    "costTp": 50,
+    "rarity": "EPIC",
+    "inheritRate": 0,
+    "effects": [
+      { "type": "EXTRA_TURN", "value": 1 }
+    ]
+  },
+  {
+    "id": "skill_char_thorns",
+    "name": "荆棘共鸣指令",
+    "desc": "铁壁领主指令：赋予全体宠物受击反伤光环，受击时反弹300%伤害给攻击者。",
+    "type": "COMMAND",
+    "targetType": "ALL_ALLIES",
+    "costTp": 30,
+    "rarity": "RARE",
+    "inheritRate": 0,
+    "effects": [
+      { "type": "THORNS_AURA", "value": 3.0, "turns": 2 }
+    ]
+  },
+  {
+    "id": "skill_ember_spit",
+    "name": "火花吐息",
+    "desc": "喷吐微弱火花，造成少量火焰伤害。",
+    "type": "ACTIVE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 10,
+    "rarity": "COMMON",
+    "inheritRate": 0.7,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 1.2, "baseFlat": 10 }
+    ]
+  },
+  {
+    "id": "skill_rock_armor",
+    "name": "磐石重甲",
+    "desc": "强化甲壳，提升自身50%防御力持续2回合。",
+    "type": "ACTIVE",
+    "targetType": "SELF",
+    "costMp": 15,
+    "rarity": "COMMON",
+    "inheritRate": 0.65,
+    "effects": [
+      { "type": "BUFF_STAT", "statKey": "def", "statPercent": 0.5, "turns": 2 }
+    ]
+  },
+  {
+    "id": "skill_gale_claw",
+    "name": "疾风利爪",
+    "desc": "极速突袭，对单体造成快速打击并推进自身行动条。",
+    "type": "ACTIVE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 15,
+    "rarity": "COMMON",
+    "inheritRate": 0.6,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 1.4, "baseFlat": 15 }
+    ]
+  },
+  {
+    "id": "skill_frost_bolt",
+    "name": "极寒冰箭",
+    "desc": "凝结寒冰射击单体，造成冰霜法术伤害。",
+    "type": "ACTIVE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 20,
+    "rarity": "COMMON",
+    "inheritRate": 0.6,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 1.5, "baseFlat": 20 }
+    ]
+  },
+  {
+    "id": "skill_death_bite",
+    "name": "亡魂撕咬",
+    "desc": "撕扯灵魂，造成伤害并吸取50%伤害转化为自身生命。",
+    "type": "ACTIVE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 20,
+    "rarity": "COMMON",
+    "inheritRate": 0.6,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 1.3, "baseFlat": 15 }
+    ]
+  },
+  {
+    "id": "skill_flame_burst",
+    "name": "烈焰暴击",
+    "desc": "凝聚高浓度烈焰引发大爆炸，高暴击倍率单体爆发！",
+    "type": "ACTIVE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 35,
+    "rarity": "RARE",
+    "inheritRate": 0.45,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 2.4, "baseFlat": 30 }
+    ]
+  },
+  {
+    "id": "skill_magma_slam",
+    "name": "熔岩重锤",
+    "desc": "熔岩巨兽专属技：引动地底岩浆猛烈砸击单体敌人，造成恐怖火焰巨力！",
+    "type": "ACTIVE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 40,
+    "rarity": "RARE",
+    "inheritRate": 0.4,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 2.8, "baseFlat": 50 }
+    ]
+  },
+  {
+    "id": "skill_lightning_strike",
+    "name": "雷霆万钧",
+    "desc": "雷霆狮鹫专属技：引动天雷贯穿单体，附带极高暴击几率！",
+    "type": "ACTIVE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 45,
+    "rarity": "RARE",
+    "inheritRate": 0.4,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 3.0, "baseFlat": 60 }
+    ]
+  },
+  {
+    "id": "skill_soul_harvest",
+    "name": "死者盛宴",
+    "desc": "冥骸骑士专属技：收割亡魂对敌方全体造成范围暗黑侵蚀！",
+    "type": "ACTIVE",
+    "targetType": "ALL_ENEMIES",
+    "costMp": 50,
+    "rarity": "RARE",
+    "inheritRate": 0.4,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 2.2, "baseFlat": 40 }
+    ]
+  },
+  {
+    "id": "skill_apocalypse_flame",
+    "name": "灭世红莲龙息",
+    "desc": "狱火炎龙终极奥义：唤醒远古真龙之怒，对敌方全体造成毁灭性的灭世龙息！",
+    "type": "ACTIVE",
+    "targetType": "ALL_ENEMIES",
+    "costMp": 80,
+    "rarity": "EPIC",
+    "inheritRate": 0.25,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 4.5, "baseFlat": 120 }
+    ]
+  }
+]

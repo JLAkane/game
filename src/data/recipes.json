@@ -1,0 +1,40 @@
+{
+  "specialRecipes": [
+    {
+      "parentA": "pet_fire_lizard",
+      "parentB": "pet_rock_turtle",
+      "childId": "pet_magma_behemoth",
+      "tier": 2,
+      "desc": "火尾蜥 + 岩壳龟 = 熔岩巨兽 (T2 稀有)"
+    },
+    {
+      "parentA": "pet_storm_falcon",
+      "parentB": "pet_fire_lizard",
+      "childId": "pet_thunder_griffon",
+      "tier": 2,
+      "desc": "暴风隼 + 火尾蜥 = 雷霆狮鹫 (T2 稀有)"
+    },
+    {
+      "parentA": "pet_spectral_wisp",
+      "parentB": "pet_bone_hound",
+      "childId": "pet_death_knight",
+      "tier": 2,
+      "desc": "冰霜幽魂 + 骸骨恶犬 = 冥骸骑士 (T2 稀有)"
+    },
+    {
+      "parentA": "pet_magma_behemoth",
+      "parentB": "pet_thunder_griffon",
+      "childId": "pet_hellfire_dragon",
+      "tier": 3,
+      "desc": "熔岩巨兽 + 雷霆狮鹫 = 狱火炎龙 (T3 史诗)"
+    }
+  ],
+  "genericRaceMatrix": [
+    { "raceA": "BEAST", "raceB": "BEAST", "resultRace": "BEAST" },
+    { "raceA": "BEAST", "raceB": "DRAGON", "resultRace": "DRAGON" },
+    { "raceA": "BEAST", "raceB": "ELEMENTAL", "resultRace": "BEAST" },
+    { "raceA": "BEAST", "raceB": "UNDEAD", "resultRace": "UNDEAD" },
+    { "raceA": "ELEMENTAL", "raceB": "UNDEAD", "resultRace": "UNDEAD" },
+    { "raceA": "DRAGON", "raceB": "DRAGON", "resultRace": "DRAGON" }
+  ]
+}

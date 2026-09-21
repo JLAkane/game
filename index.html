@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>御兽神决：基因合成与回合策略 (Pet Nurturing Strategy RPG)</title>
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body class="bg-game-dark bg-grid-pattern min-h-screen text-slate-200 antialiased flex flex-col">
+  <!-- 顶部导航栏 -->
+  <header class="border-b border-game-border bg-game-card/90 backdrop-blur px-6 py-3 flex items-center justify-between sticky top-0 z-50">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-amber-500 to-rose-500 flex items-center justify-center text-xl shadow-lg shadow-amber-500/20">
+        🐲
+      </div>
+      <div>
+        <h1 class="font-bold text-lg text-amber-400 tracking-wide">御兽神决 · 基因共鸣</h1>
+        <p class="text-xs text-slate-400">开局角色冲锋，后期宠物核爆 | 策略回合制RPG原型</p>
+      </div>
+    </div>
+
+    <!-- 导航选项卡 -->
+    <nav class="flex items-center gap-2 bg-slate-900/80 p-1 rounded-xl border border-slate-800 text-sm">
+      <button id="tab-battle" class="nav-tab px-4 py-1.5 rounded-lg font-medium transition-all duration-200 bg-amber-500 text-slate-950 shadow">
+        ⚔️ 战斗演练舱
+      </button>
+      <button id="tab-breeding" class="nav-tab px-4 py-1.5 rounded-lg font-medium transition-all duration-200 text-slate-400 hover:text-white">
+        🧬 基因培育台
+      </button>
+      <button id="tab-classes" class="nav-tab px-4 py-1.5 rounded-lg font-medium transition-all duration-200 text-slate-400 hover:text-white">
+        👑 职业与战术
+      </button>
+      <button id="tab-dex" class="nav-tab px-4 py-1.5 rounded-lg font-medium transition-all duration-200 text-slate-400 hover:text-white">
+        📖 宠物图鉴
+      </button>
+    </nav>
+  </header>
+
+  <!-- 主视图容器 -->
+  <main id="app-container" class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col">
+    <!-- 动态组件挂载点 -->
+  </main>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
