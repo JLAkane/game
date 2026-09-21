@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const classManager = new ClassManager(classes);
 
   // 2. 初始化表现层组件
-  const battleView = new BattleView(container, battleEngine, skills);
+  const battleView = new BattleView(container, battleEngine, skills, classManager);
   const breedingView = new BreedingView(container, breedingEngine, pets, skills);
   const classTalentView = new ClassTalentView(container, classManager, skills);
   const dexView = new DexView(container, pets, recipes, skills);

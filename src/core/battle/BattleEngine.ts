@@ -1,4 +1,4 @@
-import { BattleUnit, SkillConfig, BattleLogEntry } from '../types.ts';
+import { BattleUnit, SkillConfig, BattleLogEntry, ClassPassive } from '../types.ts';
 import { DamageCalculator } from './DamageCalculator.ts';
 
 export type BattleStatus = 'READY' | 'IN_PROGRESS' | 'VICTORY' | 'DEFEAT';
@@ -11,33 +11,73 @@ export class BattleEngine {
   public turnCount: number = 0;
   public status: BattleStatus = 'READY';
   public skillsMap: Map<string, SkillConfig> = new Map();
+  public activePassive?: ClassPassive;
 
   constructor(skills: SkillConfig[]) {
     skills.forEach(s => this.skillsMap.set(s.id, s));
   }
 
-  public initBattle(playerTeam: BattleUnit[], enemyTeam: BattleUnit[]): void {
+  public initBattle(playerTeam: BattleUnit[], enemyTeam: BattleUnit[], activePassive?: ClassPassive): void {
     this.playerTeam = playerTeam;
     this.enemyTeam = enemyTeam;
     this.logs = [];
     this.turnCount = 0;
     this.status = 'IN_PROGRESS';
+    this.activePassive = activePassive;
 
-    // 初始化行动距离，并注入基础普攻兜底
+    // 初始化行动距离，并强制确保基础普攻永远位于第 1 个技能槽位 (index 0)
     [...this.playerTeam, ...this.enemyTeam].forEach(unit => {
       unit.actionDistance = 10000;
       unit.buffs = [];
+      unit.shield = unit.shield || 0;
       unit.isDead = false;
-      if (!unit.skills.includes('skill_basic_strike')) {
-        unit.skills.push('skill_basic_strike');
+
+      const basicIdx = unit.skills.indexOf('skill_basic_strike');
+      if (basicIdx > -1) {
+        unit.skills.splice(basicIdx, 1);
       }
+      unit.skills.unshift('skill_basic_strike');
     });
+
+    // 职业常驻被动光环生效（主角在场即常驻生效，即使阵亡也始终生效）
+    if (this.activePassive) {
+      if (this.activePassive.type === 'PET_MAX_HP') {
+        this.playerTeam.filter(u => u.type === 'PET').forEach(p => {
+          p.maxHp = Math.round(p.maxHp * (1 + this.activePassive!.value));
+          p.currentHp = p.maxHp;
+        });
+        this.addLog('系统', `🛡️【${this.activePassive.name}】光环生效：全队宠物最大生命值提升 ${Math.round(this.activePassive.value * 100)}%！`, 'INFO');
+      } else if (this.activePassive.type === 'PET_CRIT_RATE') {
+        this.playerTeam.filter(u => u.type === 'PET').forEach(p => {
+          p.critRate = Math.min(1.0, p.critRate + this.activePassive!.value);
+        });
+        this.addLog('系统', `👑【${this.activePassive.name}】光环生效：全队宠物暴击率提升 ${Math.round(this.activePassive.value * 100)}%！`, 'INFO');
+      } else if (this.activePassive.type === 'TEAM_SPD') {
+        this.playerTeam.forEach(u => {
+          u.spd = Math.round(u.spd * (1 + this.activePassive!.value));
+        });
+        this.addLog('系统', `🏹【${this.activePassive.name}】光环生效：全队速度提升 ${Math.round(this.activePassive.value * 100)}%！`, 'INFO');
+      } else if (this.activePassive.type === 'PET_MP_COST_REDUCTION') {
+        this.addLog('系统', `🔮【${this.activePassive.name}】光环生效：全队宠物技能 MP 消耗降低 ${Math.round(this.activePassive.value * 100)}%！`, 'INFO');
+      }
+    }
 
     this.addLog('系统', '战斗开始！', 'INFO');
     this.advanceToNextTurn();
 
     // 如果先手是敌方，自动执行敌方行动直至玩家回合
     this.runAiTurns();
+  }
+
+  /**
+   * 计算技能实际消耗（受魔力溢流光环等加成）
+   */
+  public getSkillCostMp(actor: BattleUnit, skill: SkillConfig): number {
+    let cost = skill.costMp || skill.costTp || 0;
+    if (actor.type === 'PET' && this.activePassive?.type === 'PET_MP_COST_REDUCTION') {
+      cost = Math.max(0, Math.round(cost * (1 - this.activePassive.value)));
+    }
+    return cost;
   }
 
   /**
@@ -99,10 +139,10 @@ export class BattleEngine {
     }
     if (!target) return false;
 
-    // 消耗战术点/魔法
-    if (skill.costTp && actor.currentMp < skill.costTp) return false;
-    if (skill.costMp && actor.currentMp < skill.costMp) return false;
-    actor.currentMp -= (skill.costTp || skill.costMp || 0);
+    // 消耗战术点/魔法 (计算被动减耗)
+    const cost = this.getSkillCostMp(actor, skill);
+    if (actor.currentMp < cost) return false;
+    actor.currentMp -= cost;
 
     // 遍历技能效果结算
     skill.effects.forEach(effect => {
@@ -114,7 +154,19 @@ export class BattleEngine {
 
           targets.forEach(t => {
             const res = DamageCalculator.calculate(actor, t, skill, effect);
-            t.currentHp = Math.max(0, t.currentHp - res.finalDamage);
+            
+            // 护盾抵扣伤害：优先扣除护盾值
+            let finalDmg = res.finalDamage;
+            if (t.shield && t.shield > 0) {
+              if (t.shield >= finalDmg) {
+                t.shield -= finalDmg;
+                finalDmg = 0;
+              } else {
+                finalDmg -= t.shield;
+                t.shield = 0;
+              }
+            }
+            t.currentHp = Math.max(0, t.currentHp - finalDmg);
             
             this.addLog(
               actor.name, 
@@ -125,10 +177,20 @@ export class BattleEngine {
               res.isCrit
             );
 
-            // 检查反弹伤害
+            // 检查反弹/反击伤害
             if (res.reflectedDamage > 0 && !actor.isDead) {
-              actor.currentHp = Math.max(0, actor.currentHp - res.reflectedDamage);
-              this.addLog(t.name, `【荆棘反伤】对 [${actor.name}] 反震 ${res.reflectedDamage} 点伤害！`, 'DAMAGE');
+              let reflectDmg = res.reflectedDamage;
+              if (actor.shield && actor.shield > 0) {
+                if (actor.shield >= reflectDmg) {
+                  actor.shield -= reflectDmg;
+                  reflectDmg = 0;
+                } else {
+                  reflectDmg -= actor.shield;
+                  actor.shield = 0;
+                }
+              }
+              actor.currentHp = Math.max(0, actor.currentHp - reflectDmg);
+              this.addLog(t.name, `【反击反震】对 [${actor.name}] 反震 ${res.reflectedDamage} 点伤害！`, 'DAMAGE');
               if (actor.currentHp <= 0) {
                 actor.isDead = true;
                 this.addLog('系统', `[${actor.name}] 倒下了！`, 'DEATH');
@@ -144,15 +206,16 @@ export class BattleEngine {
         }
 
         case 'OVERLOAD': {
-          // 超载：扣除当前10%生命，赋予超强攻击加成与必暴
-          const hpCost = Math.max(1, Math.round(target.currentHp * 0.1));
+          // 超载：扣除当前生命百分比，赋予超强攻击加成与必定暴击
+          const hpPercent = effect.hpCostPercent || 0.15;
+          const hpCost = Math.max(1, Math.round(target.currentHp * hpPercent));
           target.currentHp = Math.max(1, target.currentHp - hpCost);
           
-          const boostAtk = Math.round(target.atk * (effect.statPercent || 1.5));
+          const boostAtk = Math.round(target.atk * (effect.statPercent || 1.0));
           target.atk += boostAtk;
 
           target.buffs.push({
-            id: `overload_${Date.now()}`,
+            id: `overload_${Date.now()}_${Math.random()}`,
             name: '战术超载',
             effect,
             remainingTurns: effect.turns || 1,
@@ -161,7 +224,7 @@ export class BattleEngine {
 
           this.addLog(
             actor.name, 
-            `对 [${target.name}] 注射【战术超载】！扣除 ${hpCost} HP，攻击力暴增 +${boostAtk}，必定暴击！`,
+            `对 [${target.name}] 注射【${skill.name}】！消耗 ${hpCost} HP(${Math.round(hpPercent * 100)}%)，攻击力暴增 +${boostAtk}，必定暴击！`,
             'COMMAND'
           );
           break;
@@ -169,20 +232,116 @@ export class BattleEngine {
 
         case 'VULNERABILITY': {
           target.buffs.push({
-            id: `vuln_${Date.now()}`,
+            id: `vuln_${Date.now()}_${Math.random()}`,
             name: '弱点标记',
             effect,
             remainingTurns: effect.turns || 2,
             sourceId: actor.id
           });
-          this.addLog(actor.name, `向 [${target.name}] 发射【弱点指示】！受到宠物的伤害提升 +150%！`, 'COMMAND');
+          this.addLog(actor.name, `向 [${target.name}] 附加【弱点剖析标记】！受到的暴击伤害提升！`, 'COMMAND');
+          break;
+        }
+
+        case 'SHIELD': {
+          const targets = skill.targetType === 'ALL_ALLIES'
+            ? (this.isPlayerSide(actor) ? this.playerTeam : this.enemyTeam).filter(u => !u.isDead)
+            : [target!];
+          
+          targets.forEach(t => {
+            let statVal = actor.def;
+            if (effect.scalingStat === 'ATK') statVal = actor.atk;
+            const shieldAmount = Math.max(50, Math.round((effect.baseFlat || 0) + statVal * (effect.multiplier || 1.0)));
+            t.shield = (t.shield || 0) + shieldAmount;
+            t.buffs.push({
+              id: `shield_${Date.now()}_${Math.random()}`,
+              name: '圣盾护佑',
+              effect,
+              remainingTurns: effect.turns || 2,
+              sourceId: actor.id
+            });
+            this.addLog(actor.name, `施展【${skill.name}】为 [${t.name}] 施加了 ${shieldAmount} 点坚实护盾！`, 'BUFF', t.name);
+          });
+          break;
+        }
+
+        case 'DEF_REDUCTION': {
+          const targets = skill.targetType === 'ALL_ENEMIES'
+            ? (this.isPlayerSide(actor) ? this.enemyTeam : this.playerTeam).filter(u => !u.isDead)
+            : [target!];
+          targets.forEach(t => {
+            t.buffs.push({
+              id: `def_red_${Date.now()}_${Math.random()}`,
+              name: `破防(-${Math.round((effect.value || 0.2) * 100)}%)`,
+              effect,
+              remainingTurns: effect.turns || 2,
+              sourceId: actor.id
+            });
+            this.addLog(actor.name, `施展【${skill.name}】使 [${t.name}] 防御力削减 ${Math.round((effect.value || 0.2) * 100)}%！`, 'DEBUFF', t.name);
+          });
+          break;
+        }
+
+        case 'DAMAGE_BOOST': {
+          const targets = skill.targetType === 'ALL_ALLIES'
+            ? (this.isPlayerSide(actor) ? this.playerTeam : this.enemyTeam).filter(u => !u.isDead)
+            : [target!];
+          targets.forEach(t => {
+            t.buffs.push({
+              id: `dmg_boost_${Date.now()}_${Math.random()}`,
+              name: `增伤(+${Math.round((effect.value || 0.2) * 100)}%)`,
+              effect,
+              remainingTurns: effect.turns || 2,
+              sourceId: actor.id
+            });
+          });
+          this.addLog(actor.name, `奏响【${skill.name}】！全队伤害提升 ${Math.round((effect.value || 0.2) * 100)}%（不扣血）！`, 'COMMAND');
+          break;
+        }
+
+        case 'COUNTER_ATTACK': {
+          const targets = skill.targetType === 'ALL_ALLIES'
+            ? (this.isPlayerSide(actor) ? this.playerTeam : this.enemyTeam).filter(u => !u.isDead)
+            : [target!];
+          targets.forEach(t => {
+            t.buffs.push({
+              id: `counter_${Date.now()}_${Math.random()}`,
+              name: `反击姿态`,
+              effect,
+              remainingTurns: effect.turns || 2,
+              sourceId: actor.id
+            });
+          });
+          this.addLog(actor.name, `开启【${skill.name}】！受击时触发 ${Math.round((effect.value || 1.0) * 100)}% 反震伤害！`, 'COMMAND');
+          break;
+        }
+
+        case 'TAUNT': {
+          actor.buffs.push({
+            id: `taunt_${Date.now()}`,
+            name: '战意嘲讽',
+            effect,
+            remainingTurns: effect.turns || 2,
+            sourceId: actor.id
+          });
+          this.addLog(actor.name, `发出咆哮震慑！开启【战意嘲讽】，强制敌方全体必须攻击自身！`, 'BUFF');
           break;
         }
 
         case 'EXTRA_TURN': {
-          // 战术再动：直接将宠物的行动距离置 0
           target.actionDistance = 0;
-          this.addLog(actor.name, `发动【战术再动号令】！[${target.name}] 立即插队获得额外行动回合！`, 'COMMAND');
+          this.addLog(actor.name, `下发【${skill.name}】！[${target.name}] 行动条立即满溢，立即行动！`, 'COMMAND');
+          break;
+        }
+
+        case 'ADVANCE_TURN': {
+          const targets = skill.targetType === 'ALL_ALLIES'
+            ? (this.isPlayerSide(actor) ? this.playerTeam : this.enemyTeam).filter(u => !u.isDead)
+            : [target!];
+          const ratio = effect.value || 0.5;
+          targets.forEach(t => {
+            t.actionDistance = Math.max(0, t.actionDistance - Math.round(10000 * ratio));
+          });
+          this.addLog(actor.name, `吹响【${skill.name}】！全队行动条向前跃迁 ${Math.round(ratio * 100)}%！`, 'COMMAND');
           break;
         }
 
@@ -193,14 +352,14 @@ export class BattleEngine {
 
           targets.forEach(t => {
             t.buffs.push({
-              id: `thorns_${Date.now()}`,
+              id: `thorns_${Date.now()}_${Math.random()}`,
               name: '荆棘共鸣',
               effect,
               remainingTurns: effect.turns || 2,
               sourceId: actor.id
             });
           });
-          this.addLog(actor.name, `开启【荆棘共鸣指令】！全体获得 300% 伤害受击反弹！`, 'COMMAND');
+          this.addLog(actor.name, `开启【荆棘共鸣】！全体获得 300% 伤害受击反弹！`, 'COMMAND');
           break;
         }
 
@@ -209,13 +368,13 @@ export class BattleEngine {
             const addVal = Math.round(target[effect.statKey] * effect.statPercent);
             target[effect.statKey] += addVal;
             target.buffs.push({
-              id: `buff_${Date.now()}`,
+              id: `buff_${Date.now()}_${Math.random()}`,
               name: skill.name,
               effect,
               remainingTurns: effect.turns || 2,
               sourceId: actor.id
             });
-            this.addLog(actor.name, `释放【${skill.name}】，${target.name} 的 ${effect.statKey} 提升了 ${addVal} 点！`, 'BUFF');
+            this.addLog(actor.name, `施展【${skill.name}】，${target.name} 的 ${effect.statKey} 提升了 ${addVal} 点！`, 'BUFF');
           }
           break;
         }
@@ -236,9 +395,17 @@ export class BattleEngine {
         }
 
         case 'RESTORE_ENERGY': {
-          const energyVal = effect.value || 20;
-          actor.currentMp = Math.min(actor.maxMp, actor.currentMp + energyVal);
-          this.addLog(actor.name, `普通攻击命中目标，战意高昂回复了 ${energyVal} 点 MP/TP！`, 'BUFF');
+          const energyVal = effect.value || 25;
+          if (skill.targetType === 'ALL_ALLIES') {
+            const targets = (this.isPlayerSide(actor) ? this.playerTeam : this.enemyTeam).filter(u => !u.isDead);
+            targets.forEach(t => {
+              t.currentMp = Math.min(t.maxMp, t.currentMp + energyVal);
+            });
+            this.addLog(actor.name, `释放【${skill.name}】为全队成员各回复了 ${energyVal} 点 MP！`, 'BUFF');
+          } else {
+            actor.currentMp = Math.min(actor.maxMp, actor.currentMp + energyVal);
+            this.addLog(actor.name, `普通攻击命中目标，回复了 ${energyVal} 点 MP！`, 'BUFF');
+          }
           break;
         }
       }
@@ -308,8 +475,9 @@ export class BattleEngine {
       return true;
     }
 
-    // AI 目标选择策略：优先攻击存活目标
-    const target = validTargets[Math.floor(Math.random() * validTargets.length)];
+    // AI 目标选择策略：优先攻击被嘲讽锁定的目标，否则随机攻击有效目标
+    const tauntedTarget = validTargets.find(t => t.buffs.some(b => b.effect.type === 'TAUNT'));
+    const target = tauntedTarget || validTargets[Math.floor(Math.random() * validTargets.length)];
     return this.executeAction(enemy.id, skill.id, target.id);
   }
 
@@ -333,7 +501,7 @@ export class BattleEngine {
     unit.buffs = unit.buffs.filter(b => {
       b.remainingTurns--;
       if (b.remainingTurns <= 0) {
-        // Buff 移除时还原属性
+        // Buff 移除时还原属性与状态
         if (b.effect.type === 'OVERLOAD' && b.effect.statPercent) {
           const revertAtk = Math.round(unit.atk - (unit.atk / (1 + b.effect.statPercent)));
           unit.atk = Math.max(1, unit.atk - revertAtk);
@@ -341,6 +509,9 @@ export class BattleEngine {
         if (b.effect.type === 'BUFF_STAT' && b.effect.statKey && b.effect.statPercent) {
           const revertVal = Math.round(unit[b.effect.statKey] - (unit[b.effect.statKey] / (1 + b.effect.statPercent)));
           unit[b.effect.statKey] = Math.max(1, unit[b.effect.statKey] - revertVal);
+        }
+        if (b.effect.type === 'SHIELD') {
+          unit.shield = 0;
         }
         return false;
       }

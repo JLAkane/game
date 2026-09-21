@@ -1,19 +1,22 @@
 import { BattleEngine } from '../../core/battle/BattleEngine.ts';
 import { BattleUnit, SkillConfig, SkillCategory } from '../../core/types.ts';
+import { ClassManager } from '../../core/classes/ClassManager.ts';
 
 export class BattleView {
   private container: HTMLElement;
   private engine: BattleEngine;
   private skillsMap: Map<string, SkillConfig>;
+  private classManager?: ClassManager;
   private currentMode: 'EARLY' | 'LATE' = 'EARLY';
   private selectedSkillId: string | null = null;
   private selectedTargetId: string | null = null;
   private isActionInProgress: boolean = false;
 
-  constructor(container: HTMLElement, engine: BattleEngine, skills: SkillConfig[]) {
+  constructor(container: HTMLElement, engine: BattleEngine, skills: SkillConfig[], classManager?: ClassManager) {
     this.container = container;
     this.engine = engine;
     this.skillsMap = new Map(skills.map(s => [s.id, s]));
+    this.classManager = classManager;
   }
 
   public render(mode?: 'EARLY' | 'LATE'): void {
@@ -23,27 +26,32 @@ export class BattleView {
   }
 
   private initScenario(mode: 'EARLY' | 'LATE'): void {
+    const activeClass = this.classManager?.activeClass;
+    const activePassive = activeClass?.passive;
+
     if (mode === 'EARLY') {
-      const charUnit: BattleUnit = {
-        id: 'player_char',
-        name: '主角 (冒险者)',
-        type: 'CHARACTER',
-        avatar: '🧙‍♂️',
-        level: 5,
-        currentHp: 450,
-        maxHp: 450,
-        currentMp: 100,
-        maxMp: 100,
-        atk: 70,
-        def: 25,
-        spd: 105,
-        critRate: 0.15,
-        critDmg: 1.5,
-        actionDistance: 10000,
-        skills: ['skill_char_slash', 'skill_char_cleave', 'skill_basic_strike'],
-        buffs: [],
-        isDead: false
-      };
+      const charUnit: BattleUnit = this.classManager
+        ? this.classManager.createCharacterBattleUnit('EARLY_GAME')
+        : {
+            id: 'player_char',
+            name: '主角 (冒险者)',
+            type: 'CHARACTER',
+            avatar: '🧙‍♂️',
+            level: 5,
+            currentHp: 450,
+            maxHp: 450,
+            currentMp: 100,
+            maxMp: 100,
+            atk: 70,
+            def: 25,
+            spd: 105,
+            critRate: 0.15,
+            critDmg: 1.5,
+            actionDistance: 10000,
+            skills: ['skill_basic_strike'],
+            buffs: [],
+            isDead: false
+          };
 
       const petUnit: BattleUnit = {
         id: 'pet_early_1',
@@ -61,40 +69,60 @@ export class BattleView {
         critRate: 0.05,
         critDmg: 1.5,
         actionDistance: 10000,
-        skills: ['skill_ember_spit', 'skill_basic_strike'],
+        skills: ['skill_basic_strike', 'skill_ember_spit'],
         buffs: [],
         isDead: false
       };
 
       const enemies: BattleUnit[] = [
         {
-          id: 'mob_slime_1',
-          name: '荒野史莱姆 A',
+          id: 'mob_wolf_1',
+          name: '狂暴野狼 A',
           type: 'MONSTER',
-          avatar: '🟢',
-          level: 3,
-          currentHp: 220,
-          maxHp: 220,
+          avatar: '🐺',
+          level: 2,
+          currentHp: 180,
+          maxHp: 180,
           currentMp: 0,
           maxMp: 0,
-          atk: 18,
-          def: 10,
-          spd: 60,
-          critRate: 0,
+          atk: 24,
+          def: 12,
+          spd: 95,
+          critRate: 0.05,
           critDmg: 1.5,
           actionDistance: 10000,
-          skills: ['skill_monster_bite', 'skill_basic_strike'],
+          skills: ['skill_basic_strike', 'skill_monster_bite'],
           buffs: [],
           isDead: false
         },
         {
-          id: 'mob_slime_2',
-          name: '荒野史莱姆 B',
+          id: 'mob_wolf_2',
+          name: '狂暴野狼 B',
           type: 'MONSTER',
-          avatar: '🟢',
-          level: 3,
-          currentHp: 220,
-          maxHp: 220,
+          avatar: '🐺',
+          level: 2,
+          currentHp: 180,
+          maxHp: 180,
+          currentMp: 0,
+          maxMp: 0,
+          atk: 24,
+          def: 12,
+          spd: 85,
+          critRate: 0.05,
+          critDmg: 1.5,
+          actionDistance: 10000,
+          skills: ['skill_basic_strike', 'skill_monster_bite'],
+          buffs: [],
+          isDead: false
+        },
+        {
+          id: 'mob_goblin_1',
+          name: '投石哥布林',
+          type: 'MONSTER',
+          avatar: '👺',
+          level: 1,
+          currentHp: 110,
+          maxHp: 110,
           currentMp: 0,
           maxMp: 0,
           atk: 18,
@@ -103,35 +131,37 @@ export class BattleView {
           critRate: 0,
           critDmg: 1.5,
           actionDistance: 10000,
-          skills: ['skill_monster_bite', 'skill_basic_strike'],
+          skills: ['skill_basic_strike', 'skill_monster_bite'],
           buffs: [],
           isDead: false
         }
       ];
 
-      this.engine.initBattle([charUnit, petUnit], enemies);
+      this.engine.initBattle([charUnit, petUnit], enemies, activePassive);
     } else {
-      // 后期场景：角色化身战术指挥官，携带 T3 狱火炎龙与 T2 熔岩巨兽挑战深渊领主
-      const charUnit: BattleUnit = {
-        id: 'player_char',
-        name: '主角 (战术指挥官)',
-        type: 'CHARACTER',
-        avatar: '👑',
-        level: 35,
-        currentHp: 2800,
-        maxHp: 2800,
-        currentMp: 200,
-        maxMp: 200,
-        atk: 120,
-        def: 160,
-        spd: 110,
-        critRate: 0.1,
-        critDmg: 1.5,
-        actionDistance: 10000,
-        skills: ['skill_char_slash', 'skill_char_vulnerability', 'skill_char_overload', 'skill_char_extra_turn', 'skill_basic_strike'],
-        buffs: [],
-        isDead: false
-      };
+      // 后期场景：角色化身当前选中的职业，携带主力宠物挑战灭世领主
+      const charUnit: BattleUnit = this.classManager
+        ? this.classManager.createCharacterBattleUnit('LATE_GAME')
+        : {
+            id: 'player_char',
+            name: '主角 (战术指挥官)',
+            type: 'CHARACTER',
+            avatar: '👑',
+            level: 35,
+            currentHp: 2400,
+            maxHp: 2400,
+            currentMp: 180,
+            maxMp: 180,
+            atk: 165,
+            def: 130,
+            spd: 110,
+            critRate: 0.2,
+            critDmg: 1.5,
+            actionDistance: 10000,
+            skills: ['skill_basic_strike'],
+            buffs: [],
+            isDead: false
+          };
 
       const dragonUnit: BattleUnit = {
         id: 'pet_dragon',
@@ -149,7 +179,7 @@ export class BattleView {
         critRate: 0.35,
         critDmg: 2.0,
         actionDistance: 10000,
-        skills: ['skill_apocalypse_flame', 'skill_flame_burst', 'skill_basic_strike'],
+        skills: ['skill_basic_strike', 'skill_apocalypse_flame', 'skill_flame_burst', 'skill_pet_protect'],
         buffs: [],
         isDead: false
       };
@@ -170,7 +200,7 @@ export class BattleView {
         critRate: 0.2,
         critDmg: 1.6,
         actionDistance: 10000,
-        skills: ['skill_magma_slam', 'skill_rock_armor', 'skill_basic_strike'],
+        skills: ['skill_basic_strike', 'skill_magma_slam', 'skill_rock_armor', 'skill_pet_taunt'],
         buffs: [],
         isDead: false
       };
@@ -191,12 +221,12 @@ export class BattleView {
         critRate: 0.15,
         critDmg: 1.8,
         actionDistance: 10000,
-        skills: ['skill_monster_bite', 'skill_basic_strike'],
+        skills: ['skill_basic_strike', 'skill_monster_bite'],
         buffs: [],
         isDead: false
       };
 
-      this.engine.initBattle([charUnit, dragonUnit, turtleUnit], [boss]);
+      this.engine.initBattle([charUnit, dragonUnit, turtleUnit], [boss], activePassive);
     }
 
     this.syncTargetForCurrentSkill();
@@ -266,9 +296,8 @@ export class BattleView {
   }
 
   private canAffordSkill(unit: BattleUnit, skill: SkillConfig): boolean {
-    if (skill.costMp && unit.currentMp < skill.costMp) return false;
-    if (skill.costTp && unit.currentMp < skill.costTp) return false;
-    return true;
+    const cost = this.engine.getSkillCostMp(unit, skill);
+    return unit.currentMp >= cost;
   }
 
   private syncTargetForCurrentSkill(): void {
@@ -412,10 +441,12 @@ export class BattleView {
                   <span class="text-sm font-bold text-white">当前出手：${active?.name || '战斗结束'}</span>
                 </div>
                 <div class="flex items-center gap-2">
-                  ${active?.type === 'CHARACTER' ? '<span class="text-xs text-purple-400 font-medium">👑 战术指挥官</span>' : ''}
-                  <span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-amber-300 font-mono">
-                    能量: ${active?.currentMp ?? 0}/${active?.maxMp ?? 0}
-                  </span>
+                  ${active?.type === 'CHARACTER' ? `<span class="text-xs text-purple-400 font-medium">👑 ${this.classManager?.activeClass.name || '战术指挥官'}</span>` : ''}
+                  ${isPlayerTurn && active ? `
+                    <span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-amber-300 font-mono">
+                      能量: ${active?.currentMp ?? 0}/${active?.maxMp ?? 0}
+                    </span>
+                  ` : ''}
                 </div>
               </div>
 
@@ -426,6 +457,7 @@ export class BattleView {
                   if (!skill) return '';
                   const isSelected = this.selectedSkillId === skillId;
                   const canAfford = active ? this.canAffordSkill(active, skill) : true;
+                  const actualCost = active ? this.engine.getSkillCostMp(active, skill) : (skill.costMp || skill.costTp || 0);
                   const targets = active ? this.engine.getValidTargets(active, skill) : [];
                   const hasTargets = targets.length > 0;
                   const badge = this.getCategoryBadge(skill.category);
@@ -450,7 +482,7 @@ export class BattleView {
                           </span>
                         </div>
                         <span class="text-[10px] px-1.5 py-0.5 rounded font-mono ${canAfford ? 'bg-slate-800 text-slate-300' : 'bg-rose-950 text-rose-300 border border-rose-800'}">
-                          ${!canAfford ? '⚠️ 能量不足' : (skill.costTp ? `TP: ${skill.costTp}` : (skill.costMp ? `MP: ${skill.costMp}` : '免费回能'))}
+                          ${!canAfford ? '⚠️ 能量不足' : (actualCost > 0 ? `MP: ${actualCost}` : '0 消耗(+25MP)')}
                         </span>
                       </div>
                       <p class="text-[11px] text-slate-400 line-clamp-2 leading-relaxed">${skill.desc}</p>
@@ -531,6 +563,7 @@ export class BattleView {
     isSelectableTarget: boolean, 
     isAoeTarget: boolean
   ): string {
+    const isPlayerSide = this.engine.isPlayerSide(unit);
     const hpPercent = Math.max(0, Math.min(100, Math.round((unit.currentHp / unit.maxHp) * 100)));
     const mpPercent = Math.max(0, Math.min(100, Math.round((unit.currentMp / unit.maxMp) * 100)));
     const isSelectedTarget = this.selectedTargetId === unit.id && !isAoeTarget;
@@ -599,23 +632,31 @@ export class BattleView {
           </div>
         </div>
 
-        <!-- 生命条 -->
-        <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mb-1">
+        <!-- 生命条与护盾条 -->
+        <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mb-1 relative">
           <div 
-            class="h-full transition-all duration-300 ${this.engine.isPlayerSide(unit) ? 'bg-emerald-500' : 'bg-rose-500'}" 
+            class="h-full transition-all duration-300 ${isPlayerSide ? 'bg-emerald-500' : 'bg-rose-500'}" 
             style="width: ${hpPercent}%"
           ></div>
+          ${unit.shield && unit.shield > 0 ? `
+            <div class="absolute inset-0 bg-amber-400/50 border border-amber-300 rounded-full animate-pulse"></div>
+          ` : ''}
         </div>
-        <!-- 能量条 -->
+        ${isPlayerSide ? `
+        <!-- 能量条 (仅玩家方角色与宠物显示) -->
         <div class="w-full bg-slate-900 h-1 rounded-full overflow-hidden mb-1">
           <div 
             class="h-full transition-all duration-300 bg-sky-500" 
             style="width: ${mpPercent}%"
           ></div>
         </div>
-        <div class="flex justify-between text-[10px] text-slate-400">
-          <span>HP ${unit.currentHp}/${unit.maxHp}</span>
-          <span class="text-sky-300">MP ${unit.currentMp}/${unit.maxMp}</span>
+        ` : ''}
+        <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+          <span>
+            HP ${unit.currentHp}/${unit.maxHp}
+            ${unit.shield && unit.shield > 0 ? `<span class="text-amber-300 font-bold ml-1">(🛡️${unit.shield})</span>` : ''}
+          </span>
+          ${isPlayerSide ? `<span class="text-sky-300">MP ${unit.currentMp}/${unit.maxMp}</span>` : ''}
         </div>
       </div>
     `;
@@ -691,25 +732,43 @@ export class BattleView {
 
       await this.playUnitAnimation(active.id, attackAnim);
 
-      // 2. 逻辑执行
+      // 2. 逻辑执行并捕获本次行动生成的所有日志（支持全体多目标）
+      const logCountBefore = this.engine.logs.length;
       this.engine.executeAction(active.id, this.selectedSkillId, targetId);
+      const actionLogs = this.engine.logs.slice(0, this.engine.logs.length - logCountBefore);
 
-      // 3. 命中反馈与飘字
-      const latestLog = this.engine.logs[0];
-      if (latestLog) {
-        if (latestLog.type === 'DAMAGE' && latestLog.damage !== undefined) {
-          if (latestLog.isCrit) {
-            this.triggerScreenShake();
-            this.spawnFloatingText(targetId, `💥 -${latestLog.damage}!`, 'CRIT');
+      // 3. 命中反馈与全员并发飘字/受创动画
+      const animPromises: Promise<void>[] = [];
+      let anyCrit = false;
+
+      actionLogs.forEach(log => {
+        const hitUnit = this.engine.playerTeam.find(u => u.name === log.targetName) || 
+                        this.engine.enemyTeam.find(u => u.name === log.targetName) ||
+                        this.engine.findUnitById(targetId);
+        if (!hitUnit) return;
+
+        if (log.type === 'DAMAGE' && log.damage !== undefined) {
+          if (log.isCrit) {
+            anyCrit = true;
+            this.spawnFloatingText(hitUnit.id, `💥 -${log.damage}!`, 'CRIT');
           } else {
-            this.spawnFloatingText(targetId, `-${latestLog.damage}`, 'DAMAGE');
+            this.spawnFloatingText(hitUnit.id, `-${log.damage}`, 'DAMAGE');
           }
-          await this.playUnitAnimation(targetId, 'anim-hit');
-        } else if (latestLog.type === 'HEAL') {
-          this.spawnFloatingText(targetId, `💚 回复`, 'HEAL');
-        } else if (latestLog.type === 'COMMAND') {
-          this.spawnFloatingText(targetId, `✨ ${skill.name}`, 'COMMAND');
+          animPromises.push(this.playUnitAnimation(hitUnit.id, 'anim-hit'));
+        } else if (log.type === 'HEAL') {
+          this.spawnFloatingText(hitUnit.id, `💚 回复`, 'HEAL');
+        } else if (log.type === 'COMMAND') {
+          this.spawnFloatingText(hitUnit.id, `✨ ${skill.name}`, 'COMMAND');
         }
+      });
+
+      if (anyCrit) {
+        this.triggerScreenShake();
+      }
+
+      // 等待全员受击动作完成
+      if (animPromises.length > 0) {
+        await Promise.all(animPromises);
       }
 
       this.updateDOM();
@@ -733,12 +792,26 @@ export class BattleView {
 
         // 敌方突进动作
         await this.playUnitAnimation(enemy.id, 'anim-dash-left');
-        this.engine.executeAction(enemy.id, enemySkill.id, enemyTarget.id);
 
-        const enemyLog = this.engine.logs[0];
-        if (enemyLog && enemyLog.type === 'DAMAGE' && enemyLog.damage !== undefined) {
-          this.spawnFloatingText(enemyTarget.id, `-${enemyLog.damage}`, enemyLog.isCrit ? 'CRIT' : 'DAMAGE');
-          await this.playUnitAnimation(enemyTarget.id, 'anim-hit');
+        const enemyLogCountBefore = this.engine.logs.length;
+        this.engine.executeAction(enemy.id, enemySkill.id, enemyTarget.id);
+        const enemyActionLogs = this.engine.logs.slice(0, this.engine.logs.length - enemyLogCountBefore);
+
+        const enemyAnimPromises: Promise<void>[] = [];
+        enemyActionLogs.forEach(log => {
+          const hitUnit = this.engine.playerTeam.find(u => u.name === log.targetName) || 
+                          this.engine.enemyTeam.find(u => u.name === log.targetName) ||
+                          this.engine.findUnitById(enemyTarget.id);
+          if (!hitUnit) return;
+
+          if (log.type === 'DAMAGE' && log.damage !== undefined) {
+            this.spawnFloatingText(hitUnit.id, `-${log.damage}`, log.isCrit ? 'CRIT' : 'DAMAGE');
+            enemyAnimPromises.push(this.playUnitAnimation(hitUnit.id, 'anim-hit'));
+          }
+        });
+
+        if (enemyAnimPromises.length > 0) {
+          await Promise.all(enemyAnimPromises);
         }
 
         this.updateDOM();

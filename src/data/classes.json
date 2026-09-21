@@ -3,32 +3,124 @@
     "id": "TACTICAL_COMMANDER",
     "name": "战术指挥官",
     "title": "狂暴战术学者",
-    "desc": "擅长弱点标记、暴击超载注射与立即再动号令。能够将主力宠物的单体爆发放大至极致！",
+    "desc": "擅长弱点破甲、单体扣血超载与致命核爆标记。能够将主力宠物的单体爆发放大至极致！(不具备拉行动条能力)",
     "recommendedPetBuild": "单体极限核爆流（火/雷系高攻高暴宠物，如熔岩巨兽、狱火炎龙）",
-    "skills": ["skill_char_slash", "skill_char_vulnerability", "skill_char_overload", "skill_char_extra_turn"]
+    "baseHp": 2400,
+    "baseMp": 180,
+    "baseAtk": 165,
+    "baseDef": 130,
+    "baseSpd": 110,
+    "baseCritRate": 0.20,
+    "minLevel": 10,
+    "respecCost": 500,
+    "passive": {
+      "id": "passive_tc_instinct",
+      "name": "协同直觉",
+      "desc": "常驻光环：全队宠物暴击率常驻提升 15%。",
+      "type": "PET_CRIT_RATE",
+      "value": 0.15
+    },
+    "skillsPool": [
+      { "skillId": "skill_tc_slash", "unlockLevel": 10 },
+      { "skillId": "skill_tc_surge", "unlockLevel": 12 },
+      { "skillId": "skill_tc_vulnerability", "unlockLevel": 15 },
+      { "skillId": "skill_tc_overload", "unlockLevel": 20 },
+      { "skillId": "skill_tc_melt_armor", "unlockLevel": 25 },
+      { "skillId": "skill_tc_berserk", "unlockLevel": 30 }
+    ],
+    "defaultEquipped": ["skill_tc_slash", "skill_tc_vulnerability", "skill_tc_overload"]
   },
   {
     "id": "IRON_VANGUARD",
     "name": "重装铁壁领主",
     "title": "坚韧战阵教官",
-    "desc": "擅长全体挑衅嘲讽吸引火力，开启全体荆棘共鸣，将受到的伤害以数倍反震给敌方全体！",
+    "desc": "擅长为队友添加坚固护盾（不加防御属性）与反击姿态，配合肉盾宠物的嘲讽构建铜墙铁壁！",
     "recommendedPetBuild": "防守反击刺猬流（高体质双抗巨兽，如岩壳龟、冥骸骑士）",
-    "skills": ["skill_char_slash", "skill_char_cleave", "skill_char_thorns"]
+    "baseHp": 4500,
+    "baseMp": 160,
+    "baseAtk": 95,
+    "baseDef": 260,
+    "baseSpd": 85,
+    "baseCritRate": 0.05,
+    "minLevel": 10,
+    "respecCost": 500,
+    "passive": {
+      "id": "passive_iv_guardian",
+      "name": "忠诚铁卫",
+      "desc": "常驻光环：全队宠物最大生命值常驻提升 20%。",
+      "type": "PET_MAX_HP",
+      "value": 0.20
+    },
+    "skillsPool": [
+      { "skillId": "skill_iv_shield_bash", "unlockLevel": 10 },
+      { "skillId": "skill_iv_aegis_ward", "unlockLevel": 12 },
+      { "skillId": "skill_iv_counter_stance", "unlockLevel": 15 },
+      { "skillId": "skill_iv_phalanx_bastion", "unlockLevel": 20 },
+      { "skillId": "skill_iv_retaliation_array", "unlockLevel": 25 },
+      { "skillId": "skill_iv_sacrificial_barrier", "unlockLevel": 30 }
+    ],
+    "defaultEquipped": ["skill_iv_shield_bash", "skill_iv_aegis_ward", "skill_iv_counter_stance"]
   },
   {
     "id": "PSIONIC_CONDUCTOR",
     "name": "灵能元素使",
     "title": "奥术共振大师",
-    "desc": "擅长全屏法术轰炸，操控元素引力场降低敌方全抗性，催化全队宠物的元素连锁法爆！",
+    "desc": "擅长全屏法术轰炸，提供全队无伤增伤、群体适中破防与瞬间法力充能！",
     "recommendedPetBuild": "元素多重轰炸流（高魔攻多属性法宠，如冰霜幽魂、雷霆狮鹫）",
-    "skills": ["skill_char_cleave", "skill_char_vulnerability", "skill_char_extra_turn"]
+    "baseHp": 2000,
+    "baseMp": 260,
+    "baseAtk": 150,
+    "baseDef": 90,
+    "baseSpd": 105,
+    "baseCritRate": 0.12,
+    "minLevel": 10,
+    "respecCost": 500,
+    "passive": {
+      "id": "passive_pc_overflow",
+      "name": "魔力溢流",
+      "desc": "常驻光环：全队宠物释放技能消耗的 MP 常驻降低 20%。",
+      "type": "PET_MP_COST_REDUCTION",
+      "value": 0.20
+    },
+    "skillsPool": [
+      { "skillId": "skill_pc_flame_wave", "unlockLevel": 10 },
+      { "skillId": "skill_pc_frailty_field", "unlockLevel": 12 },
+      { "skillId": "skill_pc_anthem", "unlockLevel": 15 },
+      { "skillId": "skill_pc_deep_erosion", "unlockLevel": 20 },
+      { "skillId": "skill_pc_resonance_field", "unlockLevel": 25 },
+      { "skillId": "skill_pc_celestial_arcana", "unlockLevel": 30 }
+    ],
+    "defaultEquipped": ["skill_pc_flame_wave", "skill_pc_frailty_field", "skill_pc_anthem"]
   },
   {
     "id": "SHADOW_PACKMASTER",
     "name": "敏捷巡林客",
     "title": "极速狼群统帅",
-    "desc": "擅长精准穿心箭与追猎引导标记，指挥高速敏捷型宠物进行一轮又一轮的致命连续追击！",
+    "desc": "擅长精准穿心箭、突袭号令立即拉满宠物行动条，大幅提升全队速度与暴击追击！",
     "recommendedPetBuild": "暴风极速追击流（高速度高连击刺客宠，如暴风隼、骸骨恶犬）",
-    "skills": ["skill_char_slash", "skill_char_vulnerability", "skill_char_extra_turn"]
+    "baseHp": 2300,
+    "baseMp": 180,
+    "baseAtk": 140,
+    "baseDef": 100,
+    "baseSpd": 140,
+    "baseCritRate": 0.25,
+    "minLevel": 10,
+    "respecCost": 500,
+    "passive": {
+      "id": "passive_sp_swiftness",
+      "name": "敏捷光环",
+      "desc": "常驻光环：全队（角色与宠物）基础速度常驻提升 20%。",
+      "type": "TEAM_SPD",
+      "value": 0.20
+    },
+    "skillsPool": [
+      { "skillId": "skill_sp_heartseeker", "unlockLevel": 10 },
+      { "skillId": "skill_sp_gale_order", "unlockLevel": 12 },
+      { "skillId": "skill_sp_pursuit_rush", "unlockLevel": 15 },
+      { "skillId": "skill_sp_windstrider_aura", "unlockLevel": 20 },
+      { "skillId": "skill_sp_shadow_flash", "unlockLevel": 25 },
+      { "skillId": "skill_sp_wolfpack_storm", "unlockLevel": 30 }
+    ],
+    "defaultEquipped": ["skill_sp_heartseeker", "skill_sp_gale_order", "skill_sp_pursuit_rush"]
   }
 ]

@@ -29,9 +29,22 @@ export class DamageCalculator {
     
     const baseDamage = baseFlat + statVal * multiplier;
     
-    // 2. 防御减免区 (非线性防御衰减)
-    const armorPen = 0; // 基础破甲
-    const effectiveDef = Math.max(0, target.def * (1 - armorPen));
+    // 2. 防御减免区 (非线性防御衰减 + 破防/无视防御结算)
+    let defReduction = 0;
+    target.buffs.forEach(b => {
+      if (b.effect.type === 'DEF_REDUCTION' && b.effect.value) {
+        defReduction = Math.max(defReduction, b.effect.value);
+      }
+    });
+
+    let ignoreDef = 0;
+    const overloadBuff = attacker.buffs.find(b => b.effect.type === 'OVERLOAD');
+    if (overloadBuff && overloadBuff.effect.value) {
+      ignoreDef = overloadBuff.effect.value;
+    }
+
+    const totalDefDiscount = Math.min(0.9, defReduction + ignoreDef);
+    const effectiveDef = Math.max(0, target.def * (1 - totalDefDiscount));
     const mitigationCoeff = 1000 / (1000 + effectiveDef);
     
     // 3. 暴击判定区
@@ -48,19 +61,27 @@ export class DamageCalculator {
     if (attacker.type === 'PET') {
       const vulnBuff = target.buffs.find(b => b.effect.type === 'VULNERABILITY');
       if (vulnBuff && vulnBuff.effect.value) {
-        vulnerabilityMultiplier = 1.0 + vulnBuff.effect.value; // 如 1 + 1.5 = 2.5倍
+        vulnerabilityMultiplier = 1.0 + vulnBuff.effect.value; // 如 1 + 0.4 = 1.4倍
       }
     }
+
+    // 5. 团队与个人增伤乘区 (如灵能元素使的战歌、共鸣力场、星穹恩赐)
+    let damageBoostMultiplier = 1.0;
+    attacker.buffs.forEach(b => {
+      if (b.effect.type === 'DAMAGE_BOOST' && b.effect.value) {
+        damageBoostMultiplier += b.effect.value;
+      }
+    });
     
-    // 5. 最终伤害合成
-    const damageBeforeMitigation = baseDamage * critMultiplier * vulnerabilityMultiplier;
+    // 6. 最终伤害合成
+    const damageBeforeMitigation = baseDamage * critMultiplier * vulnerabilityMultiplier * damageBoostMultiplier;
     const finalDamage = Math.max(1, Math.round(damageBeforeMitigation * mitigationCoeff));
     
-    // 6. 荆棘反弹计算 (受击方拥有 THORNS_AURA)
+    // 7. 荆棘与反击共鸣反弹计算 (受击方拥有 THORNS_AURA 或 COUNTER_ATTACK)
     let reflectedDamage = 0;
-    const thornsBuff = target.buffs.find(b => b.effect.type === 'THORNS_AURA');
-    if (thornsBuff && thornsBuff.effect.value) {
-      reflectedDamage = Math.round(finalDamage * thornsBuff.effect.value);
+    const counterBuff = target.buffs.find(b => b.effect.type === 'THORNS_AURA' || b.effect.type === 'COUNTER_ATTACK');
+    if (counterBuff && counterBuff.effect.value) {
+      reflectedDamage = Math.round(finalDamage * counterBuff.effect.value);
     }
     
     return {
@@ -69,7 +90,7 @@ export class DamageCalculator {
       isCrit,
       reflectedDamage,
       mitigationPercent: Math.round((1 - mitigationCoeff) * 100),
-      details: `[${attacker.name}] 对 [${target.name}] 造成 ${finalDamage} 伤害${isCrit ? ' (💥暴击!)' : ''}${vulnerabilityMultiplier > 1 ? ` (🎯弱点增幅 x${vulnerabilityMultiplier})` : ''}`
+      details: `[${attacker.name}] 对 [${target.name}] 造成 ${finalDamage} 伤害${isCrit ? ' (💥暴击!)' : ''}${vulnerabilityMultiplier > 1 ? ` (🎯弱点增幅 x${vulnerabilityMultiplier})` : ''}${damageBoostMultiplier > 1 ? ` (✨增伤 x${damageBoostMultiplier.toFixed(2)})` : ''}${totalDefDiscount > 0 ? ` (🛡️破防 -${Math.round(totalDefDiscount * 100)}%)` : ''}`
     };
   }
 }

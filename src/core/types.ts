@@ -62,7 +62,13 @@ export type EffectType =
   | 'VULNERABILITY' 
   | 'OVERLOAD' 
   | 'EXTRA_TURN' 
+  | 'ADVANCE_TURN'
   | 'THORNS_AURA' 
+  | 'COUNTER_ATTACK'
+  | 'SHIELD'
+  | 'DEF_REDUCTION'
+  | 'DAMAGE_BOOST'
+  | 'TAUNT'
   | 'HEAL'
   | 'RESTORE_ENERGY';
 
@@ -75,6 +81,7 @@ export interface SkillEffect {
   statPercent?: number; // 属性提升百分比，如 0.5 = +50%
   turns?: number;
   value?: number;
+  hpCostPercent?: number; // 消耗当前生命值比例，如 0.15
 }
 
 export interface SkillConfig {
@@ -85,7 +92,7 @@ export interface SkillConfig {
   category: SkillCategory;
   targetType: TargetType;
   costTp?: number; // 角色战术点
-  costMp?: number; // 宠物魔法值
+  costMp?: number; // 魔法值 / 能量
   rarity: 'COMMON' | 'RARE' | 'EPIC';
   inheritRate: number; // 继承概率 0~1
   effects: SkillEffect[];
@@ -105,13 +112,36 @@ export interface GenericMatrixRule {
   resultRace: RaceType;
 }
 
+export interface ClassPassive {
+  id: string;
+  name: string;
+  desc: string;
+  type: 'PET_MAX_HP' | 'PET_CRIT_RATE' | 'PET_MP_COST_REDUCTION' | 'TEAM_SPD';
+  value: number;
+}
+
+export interface ClassSkillUnlock {
+  skillId: string;
+  unlockLevel: number;
+}
+
 export interface CharacterClassConfig {
   id: ClassType;
   name: string;
   title: string;
   desc: string;
   recommendedPetBuild: string;
-  skills: string[];
+  baseHp: number;
+  baseMp: number;
+  baseAtk: number;
+  baseDef: number;
+  baseSpd: number;
+  baseCritRate: number;
+  minLevel: number;
+  respecCost: number;
+  passive: ClassPassive;
+  skillsPool: ClassSkillUnlock[];
+  defaultEquipped: string[];
 }
 
 export interface BuffInstance {
@@ -140,6 +170,7 @@ export interface BattleUnit {
   actionDistance: number; // CTB 剩余行动距离，初始 10000
   skills: string[];
   buffs: BuffInstance[];
+  shield?: number; // 护盾值
   isDead: boolean;
   petRef?: PetInstance;
 }
@@ -152,5 +183,5 @@ export interface BattleLogEntry {
   damage?: number;
   isCrit?: boolean;
   message: string;
-  type: 'INFO' | 'DAMAGE' | 'HEAL' | 'BUFF' | 'COMMAND' | 'DEATH';
+  type: 'INFO' | 'DAMAGE' | 'HEAL' | 'BUFF' | 'DEBUFF' | 'COMMAND' | 'DEATH';
 }
