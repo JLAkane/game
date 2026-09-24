@@ -1,4 +1,4 @@
-import { BattleUnit, SkillConfig, SkillEffect } from '../types.ts';
+import { BattleUnit, SkillConfig, SkillEffect, ElementType } from '../types.ts';
 
 export interface DamageResult {
   rawDamage: number;
@@ -6,10 +6,51 @@ export interface DamageResult {
   isCrit: boolean;
   reflectedDamage: number;
   mitigationPercent: number;
+  elementalRelation?: 'STRONG' | 'WEAK' | 'NEUTRAL';
+  elementalMultiplier?: number;
   details: string;
 }
 
 export class DamageCalculator {
+  /**
+   * 元素属性克制倍率计算
+   * 四象循环: 火(FIRE) -> 木(WOOD) -> 雷(THUNDER) -> 水(WATER) -> 火(FIRE) [克制 1.3x / 被克 0.75x]
+   * 光暗宿命: 光(LIGHT) <-> 暗(DARK) [相互克制 1.4x]
+   */
+  public static getElementalMultiplier(
+    attackerElement?: ElementType,
+    targetElement?: ElementType
+  ): { multiplier: number; relation: 'STRONG' | 'WEAK' | 'NEUTRAL' } {
+    if (!attackerElement || !targetElement) {
+      return { multiplier: 1.0, relation: 'NEUTRAL' };
+    }
+
+    // 光暗互相克制 (1.4x)
+    if (
+      (attackerElement === 'LIGHT' && targetElement === 'DARK') ||
+      (attackerElement === 'DARK' && targetElement === 'LIGHT')
+    ) {
+      return { multiplier: 1.4, relation: 'STRONG' };
+    }
+
+    // 四象循环克制
+    const counterCycle: Record<string, string> = {
+      FIRE: 'WOOD',
+      WOOD: 'THUNDER',
+      THUNDER: 'WATER',
+      WATER: 'FIRE'
+    };
+
+    if (counterCycle[attackerElement] === targetElement) {
+      return { multiplier: 1.3, relation: 'STRONG' };
+    }
+    if (counterCycle[targetElement] === attackerElement) {
+      return { multiplier: 0.75, relation: 'WEAK' };
+    }
+
+    return { multiplier: 1.0, relation: 'NEUTRAL' };
+  }
+
   /**
    * 综合伤害流水线计算
    */
@@ -72,17 +113,27 @@ export class DamageCalculator {
         damageBoostMultiplier += b.effect.value;
       }
     });
+
+    // 6. 元素属性相克乘区
+    const elemResult = DamageCalculator.getElementalMultiplier(attacker.element, target.element);
+    const elementalMultiplier = elemResult.multiplier;
     
-    // 6. 最终伤害合成
-    const damageBeforeMitigation = baseDamage * critMultiplier * vulnerabilityMultiplier * damageBoostMultiplier;
+    // 7. 最终伤害合成
+    const damageBeforeMitigation = baseDamage * critMultiplier * vulnerabilityMultiplier * damageBoostMultiplier * elementalMultiplier;
     const finalDamage = Math.max(1, Math.round(damageBeforeMitigation * mitigationCoeff));
     
-    // 7. 荆棘与反击共鸣反弹计算 (受击方拥有 THORNS_AURA 或 COUNTER_ATTACK)
+    // 8. 荆棘与反击共鸣反弹计算 (受击方拥有 THORNS_AURA 或 COUNTER_ATTACK)
     let reflectedDamage = 0;
     const counterBuff = target.buffs.find(b => b.effect.type === 'THORNS_AURA' || b.effect.type === 'COUNTER_ATTACK');
     if (counterBuff && counterBuff.effect.value) {
       reflectedDamage = Math.round(finalDamage * counterBuff.effect.value);
     }
+
+    const elemText = elemResult.relation === 'STRONG' 
+      ? ` (⚡属性克制 x${elemResult.multiplier})` 
+      : elemResult.relation === 'WEAK' 
+      ? ` (🛡️属性被克 x${elemResult.multiplier})` 
+      : '';
     
     return {
       rawDamage: Math.round(damageBeforeMitigation),
@@ -90,7 +141,9 @@ export class DamageCalculator {
       isCrit,
       reflectedDamage,
       mitigationPercent: Math.round((1 - mitigationCoeff) * 100),
-      details: `[${attacker.name}] 对 [${target.name}] 造成 ${finalDamage} 伤害${isCrit ? ' (💥暴击!)' : ''}${vulnerabilityMultiplier > 1 ? ` (🎯弱点增幅 x${vulnerabilityMultiplier})` : ''}${damageBoostMultiplier > 1 ? ` (✨增伤 x${damageBoostMultiplier.toFixed(2)})` : ''}${totalDefDiscount > 0 ? ` (🛡️破防 -${Math.round(totalDefDiscount * 100)}%)` : ''}`
+      elementalRelation: elemResult.relation,
+      elementalMultiplier: elemResult.multiplier,
+      details: `[${attacker.name}] 对 [${target.name}] 造成 ${finalDamage} 伤害${isCrit ? ' (💥暴击!)' : ''}${elemText}${vulnerabilityMultiplier > 1 ? ` (🎯弱点增幅 x${vulnerabilityMultiplier})` : ''}${damageBoostMultiplier > 1 ? ` (✨增伤 x${damageBoostMultiplier.toFixed(2)})` : ''}${totalDefDiscount > 0 ? ` (🛡️破防 -${Math.round(totalDefDiscount * 100)}%)` : ''}`
     };
   }
 }

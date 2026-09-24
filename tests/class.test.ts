@@ -59,6 +59,35 @@ describe('Protagonist Class System & Passives', () => {
     expect(failRes.message).toContain('金币不足');
   });
 
+  it('首次觉醒（4选1）转职完全免费（0金币），后续职业切换消耗500金币', () => {
+    const manager = new ClassManager(classes);
+    manager.activeClassId = undefined; // 初始未觉醒见习状态
+    manager.gold = 0; // 0金币也能觉醒
+    manager.characterLevel = 10;
+
+    expect(manager.isNovice).toBe(true);
+
+    // 首次觉醒转职：免费
+    const res = manager.switchClass('SHADOW_PACKMASTER');
+    expect(res.success).toBe(true);
+    expect(res.message).toContain('恭喜完成【职业觉醒】');
+    expect(manager.activeClassId).toBe('SHADOW_PACKMASTER');
+    expect(manager.gold).toBe(0);
+    expect(manager.isNovice).toBe(false);
+
+    // 再次转职需要 500 金币，此时 0 金币应失败
+    const failSwitch = manager.switchClass('IRON_VANGUARD');
+    expect(failSwitch.success).toBe(false);
+    expect(failSwitch.message).toContain('金币不足');
+
+    // 充值 500 金币后切换成功
+    manager.gold = 500;
+    const okSwitch = manager.switchClass('IRON_VANGUARD');
+    expect(okSwitch.success).toBe(true);
+    expect(manager.activeClassId).toBe('IRON_VANGUARD');
+    expect(manager.gold).toBe(0);
+  });
+
   it('四大职业常驻被动光环测试：铁壁领主提升宠物生命，巡林客提升速度，指挥官提升暴击', () => {
     const manager = new ClassManager(classes);
 
@@ -212,4 +241,124 @@ describe('Protagonist Class System & Passives', () => {
     expect(unitA.skills[0]).toBe('skill_basic_strike');
     expect(unitB.skills[0]).toBe('skill_basic_strike');
   });
+
+  it('已习得技能严格按当前角色等级过滤，不提前展示未习得的技能', () => {
+    const manager = new ClassManager(classes);
+
+    // Lv.1 见习阶段：已习得技能应为 0
+    manager.characterLevel = 1;
+    expect(manager.getUnlockedSkills('TACTICAL_COMMANDER')).toHaveLength(0);
+
+    // Lv.10 阶段：仅习得 Lv.10 穿甲轰斩 1 个技能
+    manager.characterLevel = 10;
+    const lv10Skills = manager.getUnlockedSkills('TACTICAL_COMMANDER');
+    expect(lv10Skills).toHaveLength(1);
+    expect(lv10Skills[0].skillId).toBe('skill_tc_slash');
+
+    // Lv.20 阶段：应习得 Lv.10, 12, 15, 20 共 4 个技能，不应包含 Lv.25 碎甲爆弹与 Lv.30 绝境狂暴
+    manager.characterLevel = 20;
+    const lv20Skills = manager.getUnlockedSkills('TACTICAL_COMMANDER');
+    expect(lv20Skills).toHaveLength(4);
+    expect(lv20Skills.map(s => s.skillId)).not.toContain('skill_tc_melt_armor');
+    expect(lv20Skills.map(s => s.skillId)).not.toContain('skill_tc_berserk');
+  });
+
+  it('见习冒险家阶段出战栏仅携带1个基础普攻，且未达等级的技能（如极限超载）绝不载入出战栏', () => {
+    const manager = new ClassManager(classes);
+
+    // 1. 见习阶段 (Lv.1 ~ 9)
+    manager.characterLevel = 1;
+    expect(manager.isNovice).toBe(true);
+    const noviceEquipped = manager.getEquippedSkills('TACTICAL_COMMANDER');
+    expect(noviceEquipped).toEqual(['skill_basic_strike']);
+    expect(manager.getRawCustomSlots('TACTICAL_COMMANDER')).toEqual(['', '', '']);
+
+    // 2. 升至 Lv.10 并觉醒转职战术指挥官
+    manager.characterLevel = 10;
+    expect(manager.isNovice).toBe(false);
+    const lv10Equipped = manager.getEquippedSkills('TACTICAL_COMMANDER');
+    // 只有 Lv.10 破甲重击符合等级，Lv.15 弱点侦测与 Lv.20 极限超载指令被严格过滤
+    expect(lv10Equipped).toEqual(['skill_basic_strike', 'skill_tc_slash']);
+    expect(lv10Equipped).not.toContain('skill_tc_overload');
+
+    // 3. 升至 Lv.20 后，极限超载才可进入出战栏
+    manager.characterLevel = 20;
+    const lv20Equipped = manager.getEquippedSkills('TACTICAL_COMMANDER');
+    expect(lv20Equipped).toContain('skill_tc_overload');
+  });
+
+  it('3个自选槽位按 2、5、10 级梯次开放，且见习期可装备已习得伤害技能', () => {
+    const manager = new ClassManager(classes);
+
+    // 1. Lv.1：槽位 0/1/2 均锁定，仅有 1 个基础普攻
+    manager.characterLevel = 1;
+    expect(manager.isSlotUnlocked(0)).toBe(false);
+    expect(manager.isSlotUnlocked(1)).toBe(false);
+    expect(manager.isSlotUnlocked(2)).toBe(false);
+    expect(manager.getUnlockedSkills()).toHaveLength(0);
+    expect(manager.getEquippedSkills()).toEqual(['skill_basic_strike']);
+
+    // 2. Lv.2：自选槽位 0 解锁 (Lv.2)，习得【重装轰斩】(Lv.2 伤害技)
+    manager.characterLevel = 2;
+    expect(manager.isSlotUnlocked(0)).toBe(true);
+    expect(manager.isSlotUnlocked(1)).toBe(false);
+    expect(manager.isSlotUnlocked(2)).toBe(false);
+    const lv2Unlocked = manager.getUnlockedSkills();
+    expect(lv2Unlocked).toHaveLength(1);
+    expect(lv2Unlocked[0].skillId).toBe('skill_char_slash');
+
+    // 装备【重装轰斩】到槽位 0
+    const equipOk = manager.equipSkill('TACTICAL_COMMANDER', 0, 'skill_char_slash');
+    expect(equipOk).toBe(true);
+    expect(manager.getEquippedSkills()).toEqual(['skill_basic_strike', 'skill_char_slash']);
+
+    // 未解锁的槽位 1 (需 Lv.5) 此时禁止装备
+    const failEquipSlot1 = manager.equipSkill('TACTICAL_COMMANDER', 1, 'skill_char_slash');
+    expect(failEquipSlot1).toBe(false);
+
+    // 3. Lv.5：自选槽位 1 解锁 (Lv.5)，已习得【旋风横扫】(Lv.3 伤害技)
+    manager.characterLevel = 5;
+    expect(manager.isSlotUnlocked(1)).toBe(true);
+    expect(manager.isSlotUnlocked(2)).toBe(false);
+    const lv5Unlocked = manager.getUnlockedSkills();
+    expect(lv5Unlocked.map(s => s.skillId)).toEqual(['skill_char_slash', 'skill_char_cleave']);
+
+    // 装备【旋风横扫】到槽位 1
+    manager.equipSkill('TACTICAL_COMMANDER', 1, 'skill_char_cleave');
+    expect(manager.getEquippedSkills()).toEqual(['skill_basic_strike', 'skill_char_slash', 'skill_char_cleave']);
+
+    // 4. Lv.8：习得【贯穿突刺】(Lv.6) 与【崩山重击】(Lv.8)
+    manager.characterLevel = 8;
+    const lv8Unlocked = manager.getUnlockedSkills();
+    expect(lv8Unlocked).toHaveLength(4);
+    expect(lv8Unlocked.map(s => s.skillId)).toContain('skill_novice_thrust');
+    expect(lv8Unlocked.map(s => s.skillId)).toContain('skill_novice_heavy_smash');
+
+    // 5. Lv.10：自选槽位 2 解锁 (Lv.10)
+    manager.characterLevel = 10;
+    expect(manager.isSlotUnlocked(2)).toBe(true);
+  });
+
+  it('checkNewlyUnlockedSkills 精准识别升级时跨越门槛习得的新技能', () => {
+    const manager = new ClassManager(classes);
+
+    // Lv.1 -> Lv.2：应精准捕获【重装轰斩】
+    const newFrom1to2 = manager.checkNewlyUnlockedSkills(1, 2);
+    expect(newFrom1to2).toHaveLength(1);
+    expect(newFrom1to2[0].skillId).toBe('skill_char_slash');
+
+    // Lv.2 -> Lv.2：未跨越，返回空
+    expect(manager.checkNewlyUnlockedSkills(2, 2)).toHaveLength(0);
+
+    // Lv.2 -> Lv.4：跨越 Lv.3，应捕获【旋风横扫】
+    const newFrom2to4 = manager.checkNewlyUnlockedSkills(2, 4);
+    expect(newFrom2to4).toHaveLength(1);
+    expect(newFrom2to4[0].skillId).toBe('skill_char_cleave');
+
+    // Lv.5 -> Lv.9：跨越 Lv.6 和 Lv.8，应同时捕获【贯穿突刺】与【崩山重击】
+    const newFrom5to9 = manager.checkNewlyUnlockedSkills(5, 9);
+    expect(newFrom5to9).toHaveLength(2);
+    expect(newFrom5to9.map(s => s.skillId)).toEqual(['skill_novice_thrust', 'skill_novice_heavy_smash']);
+  });
 });
+

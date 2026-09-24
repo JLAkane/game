@@ -1,12 +1,25 @@
-import { PetConfig, PetInstance, SpecialRecipeConfig, SkillConfig, PetTier } from '../types.ts';
+import { PetConfig, PetInstance, SpecialRecipeConfig, SkillConfig, PetTier, RaceType, GrowthRate } from '../types.ts';
+import { rollFusedGrowth, round1 } from '../pet/PetGrowthEngine.ts';
+
+export interface FusionOutcomePossibility {
+  targetConfig: PetConfig;
+  targetTier: PetTier;
+  probability: number; // 0 ~ 1, e.g. 0.35 = 35%
+  isAdvancement: boolean; // 是否属于品质进阶 (Tier + 1)
+  isSpecialRecipe: boolean;
+  recipeDesc: string;
+}
 
 export interface FusionPreview {
+  outcomes: FusionOutcomePossibility[];
+  candidateSkills: SkillConfig[];
+  mutationRate: number;
+  guaranteedMinGrowth: GrowthRate;
+  // 兼顾原有只读单一对象的调用
   targetConfig: PetConfig;
   targetTier: PetTier;
   isSpecialRecipe: boolean;
   recipeDesc: string;
-  candidateSkills: SkillConfig[];
-  mutationRate: number;
 }
 
 export interface FusionResult {
@@ -15,6 +28,7 @@ export interface FusionResult {
   mutationTrait?: string;
   inheritedSkillIds: string[];
   recipeDesc: string;
+  pickedOutcome: FusionOutcomePossibility;
 }
 
 const MUTATION_TRAITS = [
@@ -24,87 +38,215 @@ const MUTATION_TRAITS = [
   '【天雷共鸣：暴击伤害额外追加30%真实伤害】'
 ];
 
+export interface RaceMatrixEntry {
+  raceA: string;
+  raceB: string;
+  resultRace: string;
+}
+
 export class BreedingEngine {
   private petConfigs: Map<string, PetConfig> = new Map();
   private skillsMap: Map<string, SkillConfig> = new Map();
   private specialRecipes: SpecialRecipeConfig[] = [];
+  private genericRaceMatrix: RaceMatrixEntry[] = [];
 
   constructor(
     petConfigs: PetConfig[],
     skills: SkillConfig[],
-    recipes: { specialRecipes: SpecialRecipeConfig[] }
+    recipes: { 
+      specialRecipes: SpecialRecipeConfig[];
+      genericRaceMatrix?: RaceMatrixEntry[];
+    }
   ) {
     petConfigs.forEach(p => this.petConfigs.set(p.id, p));
     skills.forEach(s => this.skillsMap.set(s.id, s));
     this.specialRecipes = recipes.specialRecipes;
+    this.genericRaceMatrix = recipes.genericRaceMatrix || [];
   }
 
   /**
-   * 预览合成结果（明牌博弈，展示候选技能池与产出品种）
+   * 预览双宠融合结果（多概率产出池展示，保底均值资质与候选技能池）
    */
-  public previewFusion(parentA: PetInstance, parentB: PetInstance): FusionPreview {
-    const special = this.findSpecialRecipe(parentA.configId, parentB.configId);
-    let targetConfig: PetConfig;
+  public previewFusion(petA: PetInstance, petB: PetInstance): FusionPreview {
+    const configA = this.petConfigs.get(petA.configId)!;
+    const configB = this.petConfigs.get(petB.configId)!;
+    const baseTier = Math.max(petA.tier, petB.tier) as PetTier;
+    const resultRace = this.calculateResultRace(petA.race, petB.race) as RaceType;
+    const special = this.findSpecialRecipe(petA.configId, petB.configId);
+
+    // 1. 构建高阶突破产物 (进阶概率调至最低，不超过 10%)
+    let advConfig: PetConfig;
+    let advTier: PetTier;
     let isSpecial = false;
-    let recipeDesc = '';
-    let targetTier: PetTier = Math.max(parentA.tier, parentB.tier) as PetTier;
+    let advDesc = '';
+    const canAdvance = baseTier < 4;
 
     if (special) {
-      targetConfig = this.petConfigs.get(special.childId)!;
+      advConfig = this.petConfigs.get(special.childId)!;
+      advTier = special.tier;
       isSpecial = true;
-      recipeDesc = special.desc;
-      targetTier = special.tier;
+      advDesc = `✨ 专属公式进阶：${special.desc}`;
+    } else if (canAdvance) {
+      advTier = (baseTier + 1) as PetTier;
+      advConfig = this.findAdvancementPet(resultRace, advTier, petA, petB);
+      advDesc = `⚡ 罕见品阶突破：跃升进阶【${advConfig.name}】`;
     } else {
-      // 通用规则：同阶合成 80% 几率升阶
-      if (parentA.tier === parentB.tier && parentA.tier < 4) {
-        targetTier = (parentA.tier + 1) as PetTier;
-      }
-      // 默认在目标阶级中匹配一种同种族或父方种族的宠物
-      targetConfig = this.findFallbackChild(parentA, parentB, targetTier);
-      recipeDesc = `通用基因合成：${parentA.name} (T${parentA.tier}) + ${parentB.name} (T${parentB.tier}) 产出 T${targetTier} 宠物`;
+      // 双方已是最高阶 T4，产出同阶稀有神兽
+      advTier = 4;
+      advConfig = this.findDifferentPetOfTier(4, [configA.id, configB.id], resultRace) || configA;
+      advDesc = `🌟 创世神性觉醒：诞育稀有圣神【${advConfig.name}】`;
     }
 
+    // 2. 构建多概率产出池 (至少 3 个以上产出可能性，进阶概率固定为 10% <= 10%)
+    const outcomes: FusionOutcomePossibility[] = [];
+    const advancementProb = 0.10; // 品质进阶概率调到最低，不超过 10%
+
+    if (petA.configId !== petB.configId) {
+      // 双亲不同种：A(35%), B(35%), C同阶衍生(20%), D高阶突破(10%)
+      const configC = this.findDifferentPetOfTier(baseTier, [configA.id, configB.id], resultRace) || configA;
+
+      outcomes.push({
+        targetConfig: configA,
+        targetTier: configA.tier,
+        probability: 0.35,
+        isAdvancement: false,
+        isSpecialRecipe: false,
+        recipeDesc: `同源继承：延续形态【${configA.name}】`
+      });
+
+      outcomes.push({
+        targetConfig: configB,
+        targetTier: configB.tier,
+        probability: 0.35,
+        isAdvancement: false,
+        isSpecialRecipe: false,
+        recipeDesc: `同源继承：延续形态【${configB.name}】`
+      });
+
+      outcomes.push({
+        targetConfig: configC,
+        targetTier: configC.tier,
+        probability: 0.20,
+        isAdvancement: false,
+        isSpecialRecipe: false,
+        recipeDesc: `同阶衍生：种族基因变异【${configC.name}】`
+      });
+
+      outcomes.push({
+        targetConfig: advConfig,
+        targetTier: advTier,
+        probability: advancementProb,
+        isAdvancement: canAdvance,
+        isSpecialRecipe: isSpecial,
+        recipeDesc: advDesc
+      });
+    } else {
+      // 双亲同种：A纯血(50%), C1同阶新物种(20%), C2同阶新物种(20%), D高阶突破(10%)
+      const configC1 = this.findDifferentPetOfTier(baseTier, [configA.id], resultRace) || configA;
+      const configC2 = this.findDifferentPetOfTier(baseTier, [configA.id, configC1.id], resultRace) || configC1;
+
+      outcomes.push({
+        targetConfig: configA,
+        targetTier: configA.tier,
+        probability: 0.50,
+        isAdvancement: false,
+        isSpecialRecipe: false,
+        recipeDesc: `纯血同族继承【${configA.name}】`
+      });
+
+      outcomes.push({
+        targetConfig: configC1,
+        targetTier: configC1.tier,
+        probability: 0.20,
+        isAdvancement: false,
+        isSpecialRecipe: false,
+        recipeDesc: `同族隐性分支【${configC1.name}】`
+      });
+
+      outcomes.push({
+        targetConfig: configC2,
+        targetTier: configC2.tier,
+        probability: 0.20,
+        isAdvancement: false,
+        isSpecialRecipe: false,
+        recipeDesc: `同族同阶衍生【${configC2.name}】`
+      });
+
+      outcomes.push({
+        targetConfig: advConfig,
+        targetTier: advTier,
+        probability: advancementProb,
+        isAdvancement: canAdvance,
+        isSpecialRecipe: isSpecial,
+        recipeDesc: advDesc
+      });
+    }
+
+    // 3. 计算双亲保底均值成长
+    const guaranteedMinGrowth: GrowthRate = {
+      hpGrowth: round1((petA.growth.hpGrowth + petB.growth.hpGrowth) / 2),
+      atkGrowth: round1((petA.growth.atkGrowth + petB.growth.atkGrowth) / 2),
+      defGrowth: round1((petA.growth.defGrowth + petB.growth.defGrowth) / 2),
+      spdGrowth: round1((petA.growth.spdGrowth + petB.growth.spdGrowth) / 2)
+    };
+
     // 候选技能池
-    const candidateSkills = this.getCandidateSkills(parentA, parentB);
+    const candidateSkills = this.getCandidateSkills(petA, petB);
+
+    // 代表产物 (若有特殊配方进阶展示特殊配方，否则展示概率最大的主产物)
+    const primaryOutcome = isSpecial ? outcomes[outcomes.length - 1] : outcomes[0];
 
     return {
-      targetConfig,
-      targetTier,
-      isSpecialRecipe: isSpecial,
-      recipeDesc,
+      outcomes,
       candidateSkills,
-      mutationRate: 0.05 // 5%
+      mutationRate: 0.05, // 5%
+      guaranteedMinGrowth,
+      targetConfig: primaryOutcome.targetConfig,
+      targetTier: primaryOutcome.targetTier,
+      isSpecialRecipe: isSpecial,
+      recipeDesc: primaryOutcome.recipeDesc
     };
   }
 
   /**
-   * 执行基因合成
+   * 执行双宠基因融合
    */
   public executeFusion(
-    parentA: PetInstance,
-    parentB: PetInstance,
+    petA: PetInstance,
+    petB: PetInstance,
     lockedSkillId?: string
   ): FusionResult {
-    const preview = this.previewFusion(parentA, parentB);
-    const targetConfig = preview.targetConfig;
+    const preview = this.previewFusion(petA, petB);
 
-    // 1. 资质遗传计算 (均值 + 随机微小浮动)
-    const jitter = (Math.random() * 0.12 - 0.04); // -0.04 ~ +0.08
-    const tierBonus = targetConfig.tier * 0.1;
-    const growth = {
-      hpGrowth: Math.round(((parentA.growth.hpGrowth + parentB.growth.hpGrowth) / 2) * (1 + jitter + tierBonus) * 10) / 10,
-      atkGrowth: Math.round(((parentA.growth.atkGrowth + parentB.growth.atkGrowth) / 2) * (1 + jitter + tierBonus) * 10) / 10,
-      defGrowth: Math.round(((parentA.growth.defGrowth + parentB.growth.defGrowth) / 2) * (1 + jitter + tierBonus) * 10) / 10,
-      spdGrowth: Math.round(((parentA.growth.spdGrowth + parentB.growth.spdGrowth) / 2) * (1 + jitter + tierBonus) * 10) / 10
-    };
+    // 1. 依据设定概率掷骰决定最终产物
+    const rand = Math.random();
+    let accumulated = 0;
+    let pickedOutcome = preview.outcomes[0];
+    for (const outcome of preview.outcomes) {
+      accumulated += outcome.probability;
+      if (rand <= accumulated || outcome === preview.outcomes[preview.outcomes.length - 1]) {
+        pickedOutcome = outcome;
+        break;
+      }
+    }
 
-    // 2. 技能继承抽取
+    const targetConfig = pickedOutcome.targetConfig;
+
+    // 2. 重新抽取成长资质：去除双亲平均数限制，每次融合如同重新孵化，严格根据产物种族与品阶区间随机
+    const growth = rollFusedGrowth(
+      targetConfig.tier,
+      targetConfig.race,
+      petA.growth,
+      petB.growth
+    );
+
+    // 3. 技能继承抽取
     const inheritedSkillIds: string[] = [];
     if (lockedSkillId) {
       inheritedSkillIds.push(lockedSkillId);
     }
 
-    const pool = this.getCandidateSkills(parentA, parentB).filter(s => s.id !== lockedSkillId);
+    const pool = this.getCandidateSkills(petA, petB).filter(s => s.id !== lockedSkillId);
     pool.forEach(skill => {
       if (inheritedSkillIds.length >= 4) return; // 继承槽位上限 4
       const rate = skill.rarity === 'EPIC' ? 0.35 : (skill.rarity === 'RARE' ? 0.50 : 0.70);
@@ -119,10 +261,10 @@ export class BreedingEngine {
       inheritedSkillIds.push(fallback.id);
     }
 
-    // 3. 良性突变检测 (5% 概率)
+    // 4. 良性突变检测 (5% 概率)
     const isMutation = Math.random() < 0.05;
     let mutationTrait: string | undefined;
-    const traits: string[] = [...(parentA.traits || [])];
+    const traits: string[] = [...(petA.traits || [])];
     if (isMutation) {
       mutationTrait = MUTATION_TRAITS[Math.floor(Math.random() * MUTATION_TRAITS.length)];
       if (!traits.includes(mutationTrait)) {
@@ -130,14 +272,17 @@ export class BreedingEngine {
       }
     }
 
-    // 4. 组装新宠物实例
-    const childGen = Math.max(parentA.generation, parentB.generation) + 1;
+    // 5. 组装新宠物实例
+    const childGen = Math.max(petA.generation, petB.generation) + 1;
     const childSkills = [targetConfig.innateSkillId, ...inheritedSkillIds];
+    if (!childSkills.includes('skill_basic_strike')) {
+      childSkills.unshift('skill_basic_strike');
+    }
 
     const child: PetInstance = {
       instanceId: `pet_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
       configId: targetConfig.id,
-      name: `${targetConfig.name} [${childGen}代]`,
+      name: targetConfig.name,
       level: 1,
       exp: 0,
       tier: targetConfig.tier,
@@ -153,6 +298,7 @@ export class BreedingEngine {
       growth,
       innateSkillId: targetConfig.innateSkillId,
       skills: childSkills,
+      equippedSkills: childSkills.slice(0, 4),
       traits,
       generation: childGen
     };
@@ -162,43 +308,77 @@ export class BreedingEngine {
       isMutation,
       mutationTrait,
       inheritedSkillIds,
-      recipeDesc: preview.recipeDesc
+      recipeDesc: pickedOutcome.recipeDesc,
+      pickedOutcome
     };
   }
 
   /**
-   * 查找特殊配方
+   * 依据种族矩阵计算融合种族
    */
-  private findSpecialRecipe(parentAId: string, parentBId: string): SpecialRecipeConfig | undefined {
+  public calculateResultRace(raceA: string, raceB: string): string {
+    const match = this.genericRaceMatrix.find(m =>
+      (m.raceA === raceA && m.raceB === raceB) ||
+      (m.raceA === raceB && m.raceB === raceA)
+    );
+    return match ? match.resultRace : raceA;
+  }
+
+  /**
+   * 查找特殊融合配方
+   */
+  public findSpecialRecipe(petAId: string, petBId: string): SpecialRecipeConfig | undefined {
     return this.specialRecipes.find(r => 
-      (r.parentA === parentAId && r.parentB === parentBId) ||
-      (r.parentA === parentBId && r.parentB === parentAId)
+      (r.parentA === petAId && r.parentB === petBId) ||
+      (r.parentA === petBId && r.parentB === petAId)
     );
   }
 
   /**
-   * 通用兜底后代查找
+   * 查找同阶中除指定排除列表外的其他物种
    */
-  private findFallbackChild(parentA: PetInstance, parentB: PetInstance, targetTier: PetTier): PetConfig {
+  private findDifferentPetOfTier(
+    tier: PetTier,
+    excludeIds: string[],
+    preferredRace?: RaceType
+  ): PetConfig | undefined {
     const list = Array.from(this.petConfigs.values());
-    // 优先寻找目标品阶的同种族怪
-    const matched = list.find(p => p.tier === targetTier && (p.race === parentA.race || p.race === parentB.race));
-    if (matched) return matched;
-    // 其次寻找任意目标品阶怪
-    const anyTier = list.find(p => p.tier === targetTier);
-    if (anyTier) return anyTier;
-    // 最后退回父方配置
-    return this.petConfigs.get(parentA.configId)!;
+    if (preferredRace) {
+      const match = list.find(p => p.tier === tier && p.race === preferredRace && !excludeIds.includes(p.id));
+      if (match) return match;
+    }
+    return list.find(p => p.tier === tier && !excludeIds.includes(p.id));
   }
 
   /**
-   * 获取父母候选技能列表（去重且排除专属固有技）
+   * 查找进阶突破目标物种
    */
-  private getCandidateSkills(parentA: PetInstance, parentB: PetInstance): SkillConfig[] {
+  private findAdvancementPet(
+    targetRace: RaceType,
+    targetTier: PetTier,
+    petA: PetInstance,
+    petB: PetInstance
+  ): PetConfig {
+    const list = Array.from(this.petConfigs.values());
+    const exact = list.find(p => p.tier === targetTier && p.race === targetRace);
+    if (exact) return exact;
+
+    const matchParentRace = list.find(p => p.tier === targetTier && (p.race === petA.race || p.race === petB.race));
+    if (matchParentRace) return matchParentRace;
+
+    const anyTier = list.find(p => p.tier === targetTier);
+    if (anyTier) return anyTier;
+
+    return this.petConfigs.get(petA.configId)!;
+  }
+
+  /**
+   * 获取双宠候选技能列表（去重且排除专属固有技）
+   */
+  private getCandidateSkills(petA: PetInstance, petB: PetInstance): SkillConfig[] {
     const skillIds = new Set<string>();
-    [...parentA.skills, ...parentB.skills].forEach(id => {
-      // 固有技能不可遗传给其他物种
-      if (id !== parentA.innateSkillId && id !== parentB.innateSkillId) {
+    [...petA.skills, ...petB.skills].forEach(id => {
+      if (id !== petA.innateSkillId && id !== petB.innateSkillId) {
         skillIds.add(id);
       }
     });

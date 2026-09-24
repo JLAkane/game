@@ -18,11 +18,11 @@
   {
     "id": "skill_char_slash",
     "name": "重装轰斩",
-    "desc": "角色挥舞重武对单体造成高额物理伤害。前期主要输出手段。",
+    "desc": "角色挥舞重武器猛击单体目标，造成 1.5 倍物理伤害并附加 160 点基础威力。见习期主力单体爆发战技。",
     "type": "ACTIVE",
     "category": "DAMAGE",
     "targetType": "SINGLE_ENEMY",
-    "costTp": 0,
+    "costMp": 15,
     "rarity": "COMMON",
     "inheritRate": 0,
     "effects": [
@@ -32,15 +32,43 @@
   {
     "id": "skill_char_cleave",
     "name": "旋风横扫",
-    "desc": "角色对敌方全体造成范围挥砍伤害。",
+    "desc": "角色高速旋转重武对敌方全体造成范围挥砍伤害，造成 1.1 倍物理伤害并附加 100 点基础威力。核心群攻清场技。",
     "type": "ACTIVE",
     "category": "DAMAGE",
     "targetType": "ALL_ENEMIES",
-    "costTp": 20,
+    "costMp": 25,
     "rarity": "COMMON",
     "inheritRate": 0,
     "effects": [
-      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 1.0, "baseFlat": 100 }
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 1.1, "baseFlat": 100 }
+    ]
+  },
+  {
+    "id": "skill_novice_thrust",
+    "name": "贯穿突刺",
+    "desc": "对敌方单体发动迅猛的二段穿透突刺，造成总计 1.8 倍物理伤害并附加 120 点破甲基础伤害。",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 20,
+    "rarity": "COMMON",
+    "inheritRate": 0,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 1.8, "baseFlat": 120 }
+    ]
+  },
+  {
+    "id": "skill_novice_heavy_smash",
+    "name": "崩山重击",
+    "desc": "汇聚全身气力撼地猛击，对敌方单体造成高达 2.2 倍物理伤害并附加 220 点毁灭打击。见习期终极杀招！",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 35,
+    "rarity": "COMMON",
+    "inheritRate": 0,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 2.2, "baseFlat": 220 }
     ]
   },
   {
@@ -626,6 +654,496 @@
     "inheritRate": 0.5,
     "effects": [
       { "type": "TAUNT", "turns": 2 }
+    ]
+  },
+  {
+    "id": "skill_holy_smite",
+    "name": "圣光制裁",
+    "desc": "极光独角兽专属技：降下璀璨的神圣天光，对单体敌人造成高额光系穿透伤害。",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 30,
+    "rarity": "RARE",
+    "inheritRate": 0.4,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 2.2, "baseFlat": 40 }
+    ]
+  },
+  {
+    "id": "skill_tsunami_surge",
+    "name": "海啸怒涛",
+    "desc": "海潮蛟龙专属技：掀起万丈海啸席卷敌方全体，造成高额水属性伤害并洗礼战场。",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "ALL_ENEMIES",
+    "costMp": 45,
+    "rarity": "RARE",
+    "inheritRate": 0.4,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 2.2, "baseFlat": 45 }
+    ]
+  },
+  {
+    "id": "skill_emerald_vitality",
+    "name": "翡翠神愈",
+    "desc": "翡翠古树专属技：汲取森林本源，为己方全体持续回复巨额生命！",
+    "type": "ACTIVE",
+    "category": "HEAL",
+    "targetType": "ALL_ALLIES",
+    "costMp": 40,
+    "rarity": "RARE",
+    "inheritRate": 0.4,
+    "effects": [
+      { "type": "HEAL", "baseFlat": 250, "multiplier": 1.4, "scalingStat": "DEF" }
+    ]
+  },
+  {
+    "id": "skill_abyssal_maelstrom",
+    "name": "深渊湮灭狂潮",
+    "desc": "深渊巨神专属技：引动极渊之水碾碎全体敌人，极具破甲与粉碎威能！",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "ALL_ENEMIES",
+    "costMp": 75,
+    "rarity": "EPIC",
+    "inheritRate": 0.3,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 3.8, "baseFlat": 100 }
+    ]
+  },
+  {
+    "id": "skill_plasma_tempest",
+    "name": "等离子劫雷风暴",
+    "desc": "极电苍龙专属技：苍穹天劫神雷轰炸全体敌人，附带极高暴击与感电创伤！",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "ALL_ENEMIES",
+    "costMp": 80,
+    "rarity": "EPIC",
+    "inheritRate": 0.3,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 4.2, "baseFlat": 110 }
+    ]
+  },
+  {
+    "id": "skill_divine_judgment",
+    "name": "天界神圣裁决",
+    "desc": "天界圣马专属技：降临神圣天光贯穿单体，造成极端光系贯穿爆发！",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 60,
+    "rarity": "EPIC",
+    "inheritRate": 0.3,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 4.5, "baseFlat": 130 }
+    ]
+  },
+  {
+    "id": "skill_void_oblivion",
+    "name": "创世·终末虚空",
+    "desc": "创世虚空领主神技：撕裂次元将敌方全体拉入永恒虚无，摧枯拉朽的毁灭性打击！",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "ALL_ENEMIES",
+    "costMp": 90,
+    "rarity": "LEGENDARY",
+    "inheritRate": 0.2,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 5.5, "baseFlat": 200 }
+    ]
+  },
+  {
+    "id": "skill_supernova_rebirth",
+    "name": "超新星·赤阳天怒",
+    "desc": "太阳神不死鸟神技：恒星耀斑爆发席卷敌方全阵列，造成毁天灭地的纯阳焚烧！",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "ALL_ENEMIES",
+    "costMp": 90,
+    "rarity": "LEGENDARY",
+    "inheritRate": 0.2,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 5.8, "baseFlat": 220 }
+    ]
+  },
+  {
+    "id": "skill_frost_bite",
+    "name": "极地冻咬",
+    "desc": "极地冰熊战技：附带极寒冰霜重击单体，造成高额水系伤害。",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 25,
+    "rarity": "COMMON",
+    "inheritRate": 0.5,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 1.7, "baseFlat": 30 }
+    ]
+  },
+  {
+    "id": "skill_nature_seed",
+    "name": "寄生荆棘",
+    "desc": "碧森幼蛇龙战技：催生毒荆棘缠绕单体目标造成木属性伤害。",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 15,
+    "rarity": "COMMON",
+    "inheritRate": 0.6,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 1.3, "baseFlat": 15 }
+    ]
+  },
+  {
+    "id": "skill_lightning_spark",
+    "name": "静电火花",
+    "desc": "释放微型雷电火花刺激单体敌人，造成雷系伤害。",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 15,
+    "rarity": "COMMON",
+    "inheritRate": 0.6,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 1.3, "baseFlat": 18 }
+    ]
+  },
+  {
+    "id": "skill_void_claw",
+    "name": "深渊幽冥爪",
+    "desc": "幽渊黑龙战技：带有腐蚀暗能的利爪挥击，对单体造成高额暗属性穿透伤害。",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 35,
+    "rarity": "RARE",
+    "inheritRate": 0.45,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 2.3, "baseFlat": 45 }
+    ]
+  },
+  {
+    "id": "skill_forest_roar",
+    "name": "苍翠龙啸",
+    "desc": "翡翠角龙战技：震撼森林的龙啸，对全体敌人造成木属性自然践踏。",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "ALL_ENEMIES",
+    "costMp": 45,
+    "rarity": "RARE",
+    "inheritRate": 0.4,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 2.0, "baseFlat": 40 }
+    ]
+  },
+  {
+    "id": "skill_ice_breath",
+    "name": "霜华寒息",
+    "desc": "霜华冰龙战技：吐出冰洁如晶的极寒龙息，对敌方全体造成冰冻冲击。",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "ALL_ENEMIES",
+    "costMp": 50,
+    "rarity": "RARE",
+    "inheritRate": 0.4,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 2.1, "baseFlat": 50 }
+    ]
+  },
+  {
+    "id": "skill_holy_breath",
+    "name": "神圣光耀龙息",
+    "desc": "辉光圣龙奥义：降下万丈耀眼圣辉龙息，席卷全体敌人造成高额光系神圣爆轰！",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "ALL_ENEMIES",
+    "costMp": 75,
+    "rarity": "EPIC",
+    "inheritRate": 0.3,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 4.0, "baseFlat": 110 }
+    ]
+  },
+  {
+    "id": "skill_genesis_roar",
+    "name": "世界衔尾·创生天啸",
+    "desc": "衔尾始祖神龙神技：引动天地轮回万物生灭法则，造成全屏毁天灭地的创生毁灭打击！",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "ALL_ENEMIES",
+    "costMp": 90,
+    "rarity": "LEGENDARY",
+    "inheritRate": 0.2,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 5.6, "baseFlat": 210 }
+    ]
+  },
+  {
+    "id": "skill_light_blessing",
+    "name": "纯阳拂照",
+    "desc": "耀光微仙战技：以温暖光芒洗礼己方单体，回复生命值。",
+    "type": "ACTIVE",
+    "category": "HEAL",
+    "targetType": "SINGLE_ALLY",
+    "costMp": 20,
+    "rarity": "COMMON",
+    "inheritRate": 0.6,
+    "effects": [
+      { "type": "HEAL", "baseFlat": 180, "multiplier": 1.2, "scalingStat": "ATK" }
+    ]
+  },
+  {
+    "id": "skill_plasma_shock",
+    "name": "等离子电涌",
+    "desc": "狂风雷灵战技：压缩雷球炸裂，对单体敌人造成高额电弧法术伤害。",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 35,
+    "rarity": "RARE",
+    "inheritRate": 0.45,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 2.4, "baseFlat": 40 }
+    ]
+  },
+  {
+    "id": "skill_bone_slash",
+    "name": "断骨挥砍",
+    "desc": "骷髅战卒战技：挥舞骨刃猛烈劈砍，造成物理伤害。",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 10,
+    "rarity": "COMMON",
+    "inheritRate": 0.7,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 1.4, "baseFlat": 15 }
+    ]
+  },
+  {
+    "id": "skill_soul_ward",
+    "name": "怨念墓碑壁障",
+    "desc": "怨念墓碑战技：激活古墓阴气，提升自身50%防御力持续2回合。",
+    "type": "ACTIVE",
+    "category": "BUFF",
+    "targetType": "SELF",
+    "costMp": 15,
+    "rarity": "COMMON",
+    "inheritRate": 0.6,
+    "effects": [
+      { "type": "BUFF_STAT", "statKey": "def", "statPercent": 0.5, "turns": 2 }
+    ]
+  },
+  {
+    "id": "skill_phantom_fire",
+    "name": "引魂鬼火",
+    "desc": "冥火鬼灯战技：投掷幽绿鬼火，造成暗火双属性魔法伤害。",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 20,
+    "rarity": "COMMON",
+    "inheritRate": 0.6,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 1.5, "baseFlat": 22 }
+    ]
+  },
+  {
+    "id": "skill_frost_chill",
+    "name": "怨魂冰封",
+    "desc": "冻死怨魂战技：极寒死气侵蚀单体，造成水系冰霜伤害。",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 20,
+    "rarity": "COMMON",
+    "inheritRate": 0.6,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 1.5, "baseFlat": 20 }
+    ]
+  },
+  {
+    "id": "skill_blood_drain",
+    "name": "嗜血狂袭",
+    "desc": "嗜血夜蝠战技：尖牙刺入动脉吸取鲜血，造成伤害并汲取50%生命自愈。",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 30,
+    "rarity": "RARE",
+    "inheritRate": 0.45,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 2.2, "baseFlat": 35 }
+    ]
+  },
+  {
+    "id": "skill_banshee_wail",
+    "name": "女妖绝望嚎叫",
+    "desc": "幽泣女妖战技：发出凄厉哀鸣穿透敌方全体耳膜，造成大范围心智震慑与暗影伤害。",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "ALL_ENEMIES",
+    "costMp": 45,
+    "rarity": "RARE",
+    "inheritRate": 0.4,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 2.1, "baseFlat": 40 }
+    ]
+  },
+  {
+    "id": "skill_nether_nova",
+    "name": "幽冥死灵新星",
+    "desc": "不朽巫妖王奥义：引爆冥界幽魂核心，对敌方全体造成毁灭性暗黑狂潮！",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "ALL_ENEMIES",
+    "costMp": 75,
+    "rarity": "EPIC",
+    "inheritRate": 0.3,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 4.1, "baseFlat": 110 }
+    ]
+  },
+  {
+    "id": "skill_reaper_scythe",
+    "name": "冥府死神·命定断头台",
+    "desc": "死神塔纳托斯神技：挥下漆黑神镰斩裂命轨，对敌方全阵列造成不可逆的终极裁决！",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "ALL_ENEMIES",
+    "costMp": 90,
+    "rarity": "LEGENDARY",
+    "inheritRate": 0.2,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 5.7, "baseFlat": 210 }
+    ]
+  },
+  {
+    "id": "skill_gear_strike",
+    "name": "精密发条齿刃",
+    "desc": "发条斥候战技：高速转动齿轮切割单体目标，造成直接物理打击。",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 12,
+    "rarity": "COMMON",
+    "inheritRate": 0.65,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 1.3, "baseFlat": 15 }
+    ]
+  },
+  {
+    "id": "skill_steam_vent",
+    "name": "高温蒸汽喷流",
+    "desc": "蒸汽重甲甲虫战技：泄压阀全开喷出灼热蒸汽，对单体造成火系伤害。",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 15,
+    "rarity": "COMMON",
+    "inheritRate": 0.6,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 1.4, "baseFlat": 16 }
+    ]
+  },
+  {
+    "id": "skill_drill_thrust",
+    "name": "高频合金重钻",
+    "desc": "铁钻矿工机战技：合金钻头超载突进，破甲贯穿单体目标。",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 20,
+    "rarity": "COMMON",
+    "inheritRate": 0.6,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 1.6, "baseFlat": 25 }
+    ]
+  },
+  {
+    "id": "skill_hydro_jet",
+    "name": "超高压水切喷射",
+    "desc": "水压清洗机战技：发射工业级超高压水柱切割目标，造成水系伤害。",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 18,
+    "rarity": "COMMON",
+    "inheritRate": 0.6,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 1.5, "baseFlat": 20 }
+    ]
+  },
+  {
+    "id": "skill_solar_beam",
+    "name": "聚光热射线",
+    "desc": "聚光充能机战技：汇聚高纯度日光能量光束贯穿单体，造成光系法术打击。",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 20,
+    "rarity": "COMMON",
+    "inheritRate": 0.6,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 1.5, "baseFlat": 22 }
+    ]
+  },
+  {
+    "id": "skill_nano_repair",
+    "name": "纳米集群重塑协议",
+    "desc": "纳米自愈蜂群战技：释放纳米修补虫群，为己方全队恢复巨额生命！",
+    "type": "ACTIVE",
+    "category": "HEAL",
+    "targetType": "ALL_ALLIES",
+    "costMp": 45,
+    "rarity": "RARE",
+    "inheritRate": 0.4,
+    "effects": [
+      { "type": "HEAL", "baseFlat": 240, "multiplier": 1.3, "scalingStat": "DEF" }
+    ]
+  },
+  {
+    "id": "skill_plasma_cut",
+    "name": "高频等离子暗刃",
+    "desc": "幽灵暗杀机兵战技：隐形突袭对单体进行致命等离子斩击，极高暴击几率！",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "SINGLE_ENEMY",
+    "costMp": 35,
+    "rarity": "RARE",
+    "inheritRate": 0.45,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 2.6, "baseFlat": 40 }
+    ]
+  },
+  {
+    "id": "skill_artillery_barrage",
+    "name": "歼星多联重炮齐射",
+    "desc": "陆行要塞无畏舰奥义：展开所有重装舰炮对全场敌方进行地毯式饱和轰炸！",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "ALL_ENEMIES",
+    "costMp": 80,
+    "rarity": "EPIC",
+    "inheritRate": 0.3,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 4.3, "baseFlat": 120 }
+    ]
+  },
+  {
+    "id": "skill_infinity_drive",
+    "name": "天轨逆乱·无限奇点脉冲",
+    "desc": "时之天轨永动机神神技：过载驱动无限恒动核心，释放扭曲因果维度的歼灭神光！",
+    "type": "ACTIVE",
+    "category": "DAMAGE",
+    "targetType": "ALL_ENEMIES",
+    "costMp": 90,
+    "rarity": "LEGENDARY",
+    "inheritRate": 0.2,
+    "effects": [
+      { "type": "DAMAGE", "scalingStat": "ATK", "multiplier": 5.9, "baseFlat": 220 }
     ]
   }
 ]

@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>御兽神决：基因合成与回合策略 (Pet Nurturing Strategy RPG)</title>
-  <script type="module" crossorigin src="/assets/index-CHhNNDIs.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-Bk81K6AQ.css">
+  <script type="module" crossorigin src="/assets/index-CYkx__V4.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-DUB5uryE.css">
 </head>
 <body class="bg-game-dark bg-grid-pattern min-h-screen text-slate-200 antialiased flex flex-col">
   <!-- 顶部导航栏 -->
@@ -20,21 +20,35 @@
       </div>
     </div>
 
-    <!-- 导航选项卡 -->
-    <nav class="flex items-center gap-2 bg-slate-900/80 p-1 rounded-xl border border-slate-800 text-sm">
-      <button id="tab-battle" class="nav-tab px-4 py-1.5 rounded-lg font-medium transition-all duration-200 bg-amber-500 text-slate-950 shadow">
-        ⚔️ 战斗演练舱
+
+    <!-- 导航选项卡与工具栏 -->
+    <div class="flex items-center gap-2">
+      <nav class="flex items-center gap-2 bg-slate-900/80 p-1 rounded-xl border border-slate-800 text-sm">
+        <button id="tab-stages" class="nav-tab px-4 py-1.5 rounded-lg font-medium transition-all duration-200 bg-amber-500 text-slate-950 shadow font-bold">
+          🗺️ 冒险关卡
+        </button>
+        <button id="tab-battle" class="nav-tab px-4 py-1.5 rounded-lg font-medium transition-all duration-200 text-slate-400 hover:text-white hidden" style="display: none;">
+          ⚔️ 战役进行中
+        </button>
+        <button id="tab-pets" class="nav-tab px-4 py-1.5 rounded-lg font-medium transition-all duration-200 text-slate-400 hover:text-white">
+          🐾 灵宠伙伴
+        </button>
+        <button id="tab-shop" class="nav-tab px-4 py-1.5 rounded-lg font-medium transition-all duration-200 text-slate-400 hover:text-white">
+          🛒 幻境商城
+        </button>
+        <button id="tab-classes" class="nav-tab px-4 py-1.5 rounded-lg font-medium transition-all duration-200 text-slate-400 hover:text-white">
+          👑 职业与战术
+        </button>
+        <button id="tab-dex" class="nav-tab px-4 py-1.5 rounded-lg font-medium transition-all duration-200 text-slate-400 hover:text-white">
+          📖 宠物图鉴
+        </button>
+      </nav>
+
+      <button id="btn-open-save-manager" class="px-3 py-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-amber-300 text-xs font-semibold border border-slate-800 transition-all flex items-center gap-1.5 shadow-sm active:scale-95" title="本地存档与备份管理">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>💾 存档</span>
       </button>
-      <button id="tab-breeding" class="nav-tab px-4 py-1.5 rounded-lg font-medium transition-all duration-200 text-slate-400 hover:text-white">
-        🧬 基因培育台
-      </button>
-      <button id="tab-classes" class="nav-tab px-4 py-1.5 rounded-lg font-medium transition-all duration-200 text-slate-400 hover:text-white">
-        👑 职业与战术
-      </button>
-      <button id="tab-dex" class="nav-tab px-4 py-1.5 rounded-lg font-medium transition-all duration-200 text-slate-400 hover:text-white">
-        📖 宠物图鉴
-      </button>
-    </nav>
+    </div>
   </header>
 
   <!-- 主视图容器 -->

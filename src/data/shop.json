@@ -1,0 +1,105 @@
+[
+  {
+    "id": "item_egg_tier1",
+    "name": "初阶血脉蛋",
+    "category": "PET_EGGS",
+    "tier": 1,
+    "price": 200,
+    "icon": "🥚",
+    "description": "蕴含微弱灵兽血脉的初级宠物蛋，可破壳孵化出一阶基础灵宠。",
+    "effect": {
+      "type": "ADD_EGG",
+      "eggTier": 1
+    }
+  },
+  {
+    "id": "item_egg_tier2",
+    "name": "进阶真灵蛋",
+    "category": "PET_EGGS",
+    "tier": 2,
+    "price": 600,
+    "icon": "🥚",
+    "description": "散发着纯净灵光的进阶灵蛋，大概率孵化出二阶优良血脉宠物。",
+    "effect": {
+      "type": "ADD_EGG",
+      "eggTier": 2
+    }
+  },
+  {
+    "id": "item_egg_tier3",
+    "name": "史诗异兽蛋",
+    "category": "PET_EGGS",
+    "tier": 3,
+    "price": 1800,
+    "icon": "✨",
+    "description": "上古异兽遗留的罕见宝蛋，稳定产出高成长史诗宠物，极佳的二阶融合主胚。",
+    "effect": {
+      "type": "ADD_EGG",
+      "eggTier": 3
+    }
+  },
+  {
+    "id": "item_egg_tier4",
+    "name": "远古神话蛋",
+    "category": "PET_EGGS",
+    "tier": 4,
+    "price": 5000,
+    "icon": "🌟",
+    "description": "传说中的真灵圣卵！必能孵化出拥有神话级资质区间的至尊灵宠。",
+    "effect": {
+      "type": "ADD_EGG",
+      "eggTier": 4
+    }
+  },
+  {
+    "id": "item_exp_pill_s",
+    "name": "凝灵经验丹 (小)",
+    "category": "CONSUMABLES",
+    "tier": 1,
+    "price": 100,
+    "icon": "🧪",
+    "description": "凝聚天地灵气的初级丹药，使用后为选定宠物直接注入 +500 经验值。",
+    "effect": {
+      "type": "ADD_EXP",
+      "expValue": 500
+    }
+  },
+  {
+    "id": "item_exp_pill_l",
+    "name": "真元纯阳丹 (大)",
+    "category": "CONSUMABLES",
+    "tier": 2,
+    "price": 400,
+    "icon": "🧪",
+    "description": "纯阳灵药精粹，蕴含澎湃元力，使用后为选定宠物直接注入 +2500 经验值，助力极速成型。",
+    "effect": {
+      "type": "ADD_EXP",
+      "expValue": 2500
+    }
+  },
+  {
+    "id": "item_wash_pill",
+    "name": "造化洗髓丹",
+    "category": "CONSUMABLES",
+    "tier": 3,
+    "price": 1200,
+    "icon": "🧬",
+    "description": "逆天改命的通灵神药。针对选定宠物，在其原生种族成长区间内重新摇点资质（Reroll）。",
+    "effect": {
+      "type": "REROLL_GROWTH"
+    }
+  },
+  {
+    "id": "item_scroll_heal",
+    "name": "回春术古卷",
+    "category": "SKILL_SCROLLS",
+    "tier": 2,
+    "price": 800,
+    "icon": "📜",
+    "description": "记载着生命奥义的古老秘卷，可永久解锁木系核心治愈战技【春风拂体/回春术】。",
+    "effect": {
+      "type": "UNLOCK_SKILL",
+      "skillId": "skill_spring_heal"
+    }
+  }
+]

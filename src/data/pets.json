@@ -9,7 +9,12 @@
     "baseAtk": 22,
     "baseDef": 10,
     "baseSpd": 95,
-    "growth": { "hpGrowth": 12, "atkGrowth": 2.5, "defGrowth": 1.2, "spdGrowth": 1.0 },
+    "growth": {
+      "hpGrowth": 12,
+      "atkGrowth": 2.5,
+      "defGrowth": 1.2,
+      "spdGrowth": 1
+    },
     "innateSkillId": "skill_ember_spit",
     "avatar": "🦎",
     "desc": "栖息于火山岩缝的小蜥蜴，尾尖常年跳跃着火花。"
@@ -24,7 +29,12 @@
     "baseAtk": 14,
     "baseDef": 24,
     "baseSpd": 60,
-    "growth": { "hpGrowth": 20, "atkGrowth": 1.2, "defGrowth": 2.8, "spdGrowth": 0.6 },
+    "growth": {
+      "hpGrowth": 19.2,
+      "atkGrowth": 2,
+      "defGrowth": 1.8,
+      "spdGrowth": 0.6
+    },
     "innateSkillId": "skill_rock_armor",
     "avatar": "🐢",
     "desc": "背甲坚硬如磐石的陆龟，擅长防御反击。"
@@ -39,7 +49,12 @@
     "baseAtk": 26,
     "baseDef": 8,
     "baseSpd": 125,
-    "growth": { "hpGrowth": 10, "atkGrowth": 2.8, "defGrowth": 0.9, "spdGrowth": 2.0 },
+    "growth": {
+      "hpGrowth": 12,
+      "atkGrowth": 2.8,
+      "defGrowth": 0.9,
+      "spdGrowth": 1.3
+    },
     "innateSkillId": "skill_gale_claw",
     "avatar": "🦅",
     "desc": "穿梭于雷云中的迅猛猎手，以极速俯冲撕裂猎物。"
@@ -54,7 +69,12 @@
     "baseAtk": 28,
     "baseDef": 12,
     "baseSpd": 90,
-    "growth": { "hpGrowth": 11, "atkGrowth": 3.0, "defGrowth": 1.1, "spdGrowth": 1.1 },
+    "growth": {
+      "hpGrowth": 11,
+      "atkGrowth": 3,
+      "defGrowth": 1.1,
+      "spdGrowth": 1.1
+    },
     "innateSkillId": "skill_frost_bolt",
     "avatar": "👻",
     "desc": "凝聚了极寒之力的灵体，擅长法术轰炸与减速。"
@@ -69,7 +89,12 @@
     "baseAtk": 25,
     "baseDef": 14,
     "baseSpd": 105,
-    "growth": { "hpGrowth": 13, "atkGrowth": 2.6, "defGrowth": 1.4, "spdGrowth": 1.2 },
+    "growth": {
+      "hpGrowth": 13,
+      "atkGrowth": 2.6,
+      "defGrowth": 1.4,
+      "spdGrowth": 0.9
+    },
     "innateSkillId": "skill_death_bite",
     "avatar": "🐕",
     "desc": "自冥界爬出的凶残猎犬，攻击附带吸血与撕裂。"
@@ -84,7 +109,12 @@
     "baseAtk": 68,
     "baseDef": 52,
     "baseSpd": 80,
-    "growth": { "hpGrowth": 36, "atkGrowth": 5.8, "defGrowth": 4.5, "spdGrowth": 1.0 },
+    "growth": {
+      "hpGrowth": 36,
+      "atkGrowth": 5.8,
+      "defGrowth": 4.5,
+      "spdGrowth": 1
+    },
     "innateSkillId": "skill_magma_slam",
     "avatar": "🌋",
     "desc": "由火蜥蜴与岩壳龟融合而成的熔岩霸主，兼具恐怖的体魄与灼热烈火。"
@@ -99,7 +129,12 @@
     "baseAtk": 82,
     "baseDef": 30,
     "baseSpd": 140,
-    "growth": { "hpGrowth": 28, "atkGrowth": 7.2, "defGrowth": 2.5, "spdGrowth": 2.8 },
+    "growth": {
+      "hpGrowth": 28.8,
+      "atkGrowth": 7.2,
+      "defGrowth": 2.5,
+      "spdGrowth": 1.9
+    },
     "innateSkillId": "skill_lightning_strike",
     "avatar": "⚡",
     "desc": "执掌风暴的神禽，攻击必定附带麻痹与连击。"
@@ -114,7 +149,12 @@
     "baseAtk": 72,
     "baseDef": 58,
     "baseSpd": 90,
-    "growth": { "hpGrowth": 40, "atkGrowth": 6.2, "defGrowth": 5.0, "spdGrowth": 1.2 },
+    "growth": {
+      "hpGrowth": 40,
+      "atkGrowth": 6.2,
+      "defGrowth": 5,
+      "spdGrowth": 1.2
+    },
     "innateSkillId": "skill_soul_harvest",
     "avatar": "💀",
     "desc": "死者怨念与魔骨铸就的重装统领，受击反伤且越战越强。"
@@ -129,9 +169,934 @@
     "baseAtk": 210,
     "baseDef": 110,
     "baseSpd": 115,
-    "growth": { "hpGrowth": 85, "atkGrowth": 18.0, "defGrowth": 9.5, "spdGrowth": 2.2 },
+    "growth": {
+      "hpGrowth": 82.5,
+      "atkGrowth": 18,
+      "defGrowth": 9.5,
+      "spdGrowth": 2.2
+    },
     "innateSkillId": "skill_apocalypse_flame",
     "avatar": "🐲",
     "desc": "由熔岩巨兽突破升阶而来的古龙，其吐息能焚尽世间万物，后期的绝对核爆主C！"
+  },
+  {
+    "id": "pet_ocean_serpent",
+    "name": "海潮蛟龙",
+    "tier": 2,
+    "race": "BEAST",
+    "element": "WATER",
+    "baseHp": 460,
+    "baseAtk": 75,
+    "baseDef": 42,
+    "baseSpd": 95,
+    "growth": {
+      "hpGrowth": 34,
+      "atkGrowth": 6.5,
+      "defGrowth": 3.5,
+      "spdGrowth": 1.5
+    },
+    "innateSkillId": "skill_tsunami_surge",
+    "avatar": "🐉",
+    "desc": "栖息于深海暗涌中的水系蛟龙，能召集滔天巨浪冲垮敌军阵线。"
+  },
+  {
+    "id": "pet_emerald_treant",
+    "name": "翡翠古树",
+    "tier": 2,
+    "race": "ELEMENTAL",
+    "element": "WOOD",
+    "baseHp": 600,
+    "baseAtk": 50,
+    "baseDef": 65,
+    "baseSpd": 70,
+    "growth": {
+      "hpGrowth": 27,
+      "atkGrowth": 5.6,
+      "defGrowth": 3.2,
+      "spdGrowth": 1.3
+    },
+    "innateSkillId": "skill_emerald_vitality",
+    "avatar": "🌲",
+    "desc": "森林古老意志凝聚而成的守护之树，拥有坚韧无比的防御与回春治愈神力。"
+  },
+  {
+    "id": "pet_aurora_unicorn",
+    "name": "极光独角兽",
+    "tier": 2,
+    "race": "BEAST",
+    "element": "LIGHT",
+    "baseHp": 400,
+    "baseAtk": 78,
+    "baseDef": 38,
+    "baseSpd": 120,
+    "growth": {
+      "hpGrowth": 30,
+      "atkGrowth": 7,
+      "defGrowth": 3.2,
+      "spdGrowth": 1.9
+    },
+    "innateSkillId": "skill_holy_smite",
+    "avatar": "🦄",
+    "desc": "伴随破晓极光诞生的纯洁圣兽，角尖闪烁的神圣之光能穿透一切黑暗。"
+  },
+  {
+    "id": "pet_abyssal_titan",
+    "name": "深渊巨神",
+    "tier": 3,
+    "race": "ELEMENTAL",
+    "element": "WATER",
+    "baseHp": 1500,
+    "baseAtk": 180,
+    "baseDef": 140,
+    "baseSpd": 85,
+    "growth": {
+      "hpGrowth": 56.3,
+      "atkGrowth": 14,
+      "defGrowth": 6.7,
+      "spdGrowth": 2
+    },
+    "innateSkillId": "skill_abyssal_maelstrom",
+    "avatar": "🗿",
+    "desc": "沉睡于无底海沟深处的上古泰坦，周身流动着湮灭波涛，拥有撼天动地的极高防御与体魄。"
+  },
+  {
+    "id": "pet_storm_dragon",
+    "name": "极电苍龙",
+    "tier": 3,
+    "race": "DRAGON",
+    "element": "THUNDER",
+    "baseHp": 1150,
+    "baseAtk": 230,
+    "baseDef": 95,
+    "baseSpd": 145,
+    "growth": {
+      "hpGrowth": 80,
+      "atkGrowth": 20,
+      "defGrowth": 8,
+      "spdGrowth": 2.4
+    },
+    "innateSkillId": "skill_plasma_tempest",
+    "avatar": "🐲",
+    "desc": "翱翔于九天劫云之上的雷霆真龙，所过之处万雷奔涌，拥有极端的速度与电弧暴击！"
+  },
+  {
+    "id": "pet_celestial_pegasus",
+    "name": "天界圣马",
+    "tier": 3,
+    "race": "BEAST",
+    "element": "LIGHT",
+    "baseHp": 1250,
+    "baseAtk": 205,
+    "baseDef": 115,
+    "baseSpd": 130,
+    "growth": {
+      "hpGrowth": 90,
+      "atkGrowth": 17.5,
+      "defGrowth": 9.5,
+      "spdGrowth": 2.5
+    },
+    "innateSkillId": "skill_divine_judgment",
+    "avatar": "🪽",
+    "desc": "从天界圣域降临的纯白翼马，沐浴神圣裁决光芒，审判一切邪祟。"
+  },
+  {
+    "id": "pet_genesis_void_lord",
+    "name": "创世虚空领主",
+    "tier": 4,
+    "race": "ELEMENTAL",
+    "element": "DARK",
+    "baseHp": 2400,
+    "baseAtk": 380,
+    "baseDef": 200,
+    "baseSpd": 130,
+    "growth": {
+      "hpGrowth": 97.5,
+      "atkGrowth": 32,
+      "defGrowth": 12.6,
+      "spdGrowth": 2.8
+    },
+    "innateSkillId": "skill_void_oblivion",
+    "avatar": "🌌",
+    "desc": "诞生于宇宙起源之初的维度主宰，执掌撕裂万物的终末虚空之力，至高无上的创世神宠！"
+  },
+  {
+    "id": "pet_solaris_phoenix",
+    "name": "太阳神不死鸟",
+    "tier": 4,
+    "race": "BEAST",
+    "element": "FIRE",
+    "baseHp": 2100,
+    "baseAtk": 420,
+    "baseDef": 170,
+    "baseSpd": 160,
+    "growth": {
+      "hpGrowth": 140,
+      "atkGrowth": 28.6,
+      "defGrowth": 15,
+      "spdGrowth": 3.2
+    },
+    "innateSkillId": "skill_supernova_rebirth",
+    "avatar": "🦅",
+    "desc": "沐浴恒星核聚变神火而生的赤阳始祖，展翼遮天，掌控毁灭一切的超新星爆发！"
+  },
+  {
+    "id": "pet_shadow_panther",
+    "name": "暗夜灵豹",
+    "tier": 1,
+    "race": "BEAST",
+    "element": "DARK",
+    "baseHp": 115,
+    "baseAtk": 27,
+    "baseDef": 9,
+    "baseSpd": 120,
+    "growth": {
+      "hpGrowth": 12,
+      "atkGrowth": 2.7,
+      "defGrowth": 1,
+      "spdGrowth": 1.3
+    },
+    "innateSkillId": "skill_gale_claw",
+    "avatar": "🐆",
+    "desc": "潜伏在阴影中的黑豹，步伐悄无声息，出爪迅捷致命。"
+  },
+  {
+    "id": "pet_frost_bear",
+    "name": "极地冰熊",
+    "tier": 2,
+    "race": "BEAST",
+    "element": "WATER",
+    "baseHp": 550,
+    "baseAtk": 65,
+    "baseDef": 60,
+    "baseSpd": 75,
+    "growth": {
+      "hpGrowth": 42,
+      "atkGrowth": 5.2,
+      "defGrowth": 4.5,
+      "spdGrowth": 1
+    },
+    "innateSkillId": "skill_frost_bite",
+    "avatar": "🐻‍❄️",
+    "desc": "生长于极寒雪原的巨熊，厚重的皮毛能抵挡刺骨寒风，掌击沉重如山。"
+  },
+  {
+    "id": "pet_drake_hatchling",
+    "name": "炽火幼龙",
+    "tier": 1,
+    "race": "DRAGON",
+    "element": "FIRE",
+    "baseHp": 150,
+    "baseAtk": 26,
+    "baseDef": 14,
+    "baseSpd": 88,
+    "growth": {
+      "hpGrowth": 15,
+      "atkGrowth": 2.8,
+      "defGrowth": 1.5,
+      "spdGrowth": 1.1
+    },
+    "innateSkillId": "skill_ember_spit",
+    "avatar": "🐲",
+    "desc": "刚刚破壳的炽火飞龙幼雏，尽管身躯娇小，龙威与龙息已初现端倪。"
+  },
+  {
+    "id": "pet_azure_drake",
+    "name": "沧水幼龙",
+    "tier": 1,
+    "race": "DRAGON",
+    "element": "WATER",
+    "baseHp": 145,
+    "baseAtk": 24,
+    "baseDef": 16,
+    "baseSpd": 92,
+    "growth": {
+      "hpGrowth": 14,
+      "atkGrowth": 2.6,
+      "defGrowth": 1.7,
+      "spdGrowth": 1.2
+    },
+    "innateSkillId": "skill_frost_bolt",
+    "avatar": "🐉",
+    "desc": "诞生于深海暗礁的幼龙，鳞片水光潋滟，能喷吐高压水柱。"
+  },
+  {
+    "id": "pet_verdant_wyrm",
+    "name": "碧森幼蛇龙",
+    "tier": 1,
+    "race": "DRAGON",
+    "element": "WOOD",
+    "baseHp": 160,
+    "baseAtk": 22,
+    "baseDef": 18,
+    "baseSpd": 85,
+    "growth": {
+      "hpGrowth": 16,
+      "atkGrowth": 2.4,
+      "defGrowth": 1.9,
+      "spdGrowth": 1
+    },
+    "innateSkillId": "skill_nature_seed",
+    "avatar": "🐍",
+    "desc": "寄居于巨木冠层的树栖幼龙，身躯灵活，能引动林木生机。"
+  },
+  {
+    "id": "pet_spark_drake",
+    "name": "闪电飞龙",
+    "tier": 1,
+    "race": "DRAGON",
+    "element": "THUNDER",
+    "baseHp": 130,
+    "baseAtk": 28,
+    "baseDef": 11,
+    "baseSpd": 115,
+    "growth": {
+      "hpGrowth": 12,
+      "atkGrowth": 3,
+      "defGrowth": 1.1,
+      "spdGrowth": 1.2
+    },
+    "innateSkillId": "skill_lightning_spark",
+    "avatar": "⚡",
+    "desc": "在积雨云层中飞掠的小型翼龙，翅膀摩擦能发出噼啪电火花。"
+  },
+  {
+    "id": "pet_abyssal_wyrm",
+    "name": "幽渊黑龙",
+    "tier": 2,
+    "race": "DRAGON",
+    "element": "DARK",
+    "baseHp": 500,
+    "baseAtk": 80,
+    "baseDef": 45,
+    "baseSpd": 95,
+    "growth": {
+      "hpGrowth": 38,
+      "atkGrowth": 7,
+      "defGrowth": 3.8,
+      "spdGrowth": 1.4
+    },
+    "innateSkillId": "skill_void_claw",
+    "avatar": "🐉",
+    "desc": "深居无光地底的潜渊巨龙，黑鳞如铁甲，吐息带有腐蚀灵魂的冥蚀之力。"
+  },
+  {
+    "id": "pet_emerald_drake",
+    "name": "翡翠角龙",
+    "tier": 2,
+    "race": "DRAGON",
+    "element": "WOOD",
+    "baseHp": 580,
+    "baseAtk": 66,
+    "baseDef": 58,
+    "baseSpd": 80,
+    "growth": {
+      "hpGrowth": 39.6,
+      "atkGrowth": 6.1,
+      "defGrowth": 5,
+      "spdGrowth": 1.1
+    },
+    "innateSkillId": "skill_forest_roar",
+    "avatar": "🐲",
+    "desc": "守护古老森林的巍峨角龙，龙角宛如参天巨木，力大无穷。"
+  },
+  {
+    "id": "pet_glacier_dragon",
+    "name": "霜华冰龙",
+    "tier": 2,
+    "race": "DRAGON",
+    "element": "WATER",
+    "baseHp": 480,
+    "baseAtk": 76,
+    "baseDef": 48,
+    "baseSpd": 105,
+    "growth": {
+      "hpGrowth": 36,
+      "atkGrowth": 6.8,
+      "defGrowth": 4,
+      "spdGrowth": 1.7
+    },
+    "innateSkillId": "skill_ice_breath",
+    "avatar": "❄️",
+    "desc": "盘踞于雪山之巅的寒冰巨龙，展翼之际风雪呼啸，令大地冻结。"
+  },
+  {
+    "id": "pet_radiant_dragon",
+    "name": "辉光圣龙",
+    "tier": 3,
+    "race": "DRAGON",
+    "element": "LIGHT",
+    "baseHp": 1350,
+    "baseAtk": 215,
+    "baseDef": 120,
+    "baseSpd": 125,
+    "growth": {
+      "hpGrowth": 82.5,
+      "atkGrowth": 18.5,
+      "defGrowth": 10.5,
+      "spdGrowth": 2.4
+    },
+    "innateSkillId": "skill_holy_breath",
+    "avatar": "☀️",
+    "desc": "光之神域的守护巨龙，周身流转耀眼圣辉，神圣龙息净化世间一切污秽。"
+  },
+  {
+    "id": "pet_ouroboros_dragon",
+    "name": "衔尾始祖神龙",
+    "tier": 4,
+    "race": "DRAGON",
+    "element": "WOOD",
+    "baseHp": 2600,
+    "baseAtk": 360,
+    "baseDef": 220,
+    "baseSpd": 140,
+    "growth": {
+      "hpGrowth": 143,
+      "atkGrowth": 30,
+      "defGrowth": 19.8,
+      "spdGrowth": 2.8
+    },
+    "innateSkillId": "skill_genesis_roar",
+    "avatar": "🐉",
+    "desc": "象征永恒轮回与天地重构的世界之蛇真龙，一呼一吸之间草木枯荣、万物生灭！"
+  },
+  {
+    "id": "pet_cinder_spirit",
+    "name": "烬火微灵",
+    "tier": 1,
+    "race": "ELEMENTAL",
+    "element": "FIRE",
+    "baseHp": 105,
+    "baseAtk": 29,
+    "baseDef": 9,
+    "baseSpd": 100,
+    "growth": {
+      "hpGrowth": 10,
+      "atkGrowth": 3.1,
+      "defGrowth": 0.9,
+      "spdGrowth": 1.2
+    },
+    "innateSkillId": "skill_ember_spit",
+    "avatar": "🔥",
+    "desc": "由纯粹余烬火苗凝聚而成的跳跃火灵，性格活泼热情。"
+  },
+  {
+    "id": "pet_thunder_orb",
+    "name": "电光浮灵",
+    "tier": 1,
+    "race": "ELEMENTAL",
+    "element": "THUNDER",
+    "baseHp": 95,
+    "baseAtk": 30,
+    "baseDef": 7,
+    "baseSpd": 130,
+    "growth": {
+      "hpGrowth": 9,
+      "atkGrowth": 3.2,
+      "defGrowth": 0.8,
+      "spdGrowth": 1.8
+    },
+    "innateSkillId": "skill_lightning_spark",
+    "avatar": "🔮",
+    "desc": "漂浮在空中的等离子电光球，不断释放微型静电弧。"
+  },
+  {
+    "id": "pet_light_fairy",
+    "name": "耀光微仙",
+    "tier": 1,
+    "race": "ELEMENTAL",
+    "element": "LIGHT",
+    "baseHp": 115,
+    "baseAtk": 23,
+    "baseDef": 13,
+    "baseSpd": 105,
+    "growth": {
+      "hpGrowth": 11,
+      "atkGrowth": 2.4,
+      "defGrowth": 1.3,
+      "spdGrowth": 1.3
+    },
+    "innateSkillId": "skill_light_blessing",
+    "avatar": "🧚",
+    "desc": "由清晨第一缕阳光凝聚的小仙灵，擅长驱散阴霾与净化治愈。"
+  },
+  {
+    "id": "pet_stone_golem",
+    "name": "泥岩石灵",
+    "tier": 1,
+    "race": "ELEMENTAL",
+    "element": "WOOD",
+    "baseHp": 190,
+    "baseAtk": 15,
+    "baseDef": 23,
+    "baseSpd": 65,
+    "growth": {
+      "hpGrowth": 12,
+      "atkGrowth": 2.3,
+      "defGrowth": 1.3,
+      "spdGrowth": 0.8
+    },
+    "innateSkillId": "skill_rock_armor",
+    "avatar": "🗿",
+    "desc": "由大地泥石聚合物赋予灵魂的矮小石人，身躯敦厚踏实。"
+  },
+  {
+    "id": "pet_flame_elemental",
+    "name": "炎阳烈灵",
+    "tier": 2,
+    "race": "ELEMENTAL",
+    "element": "FIRE",
+    "baseHp": 420,
+    "baseAtk": 85,
+    "baseDef": 32,
+    "baseSpd": 110,
+    "growth": {
+      "hpGrowth": 27,
+      "atkGrowth": 7.5,
+      "defGrowth": 2.6,
+      "spdGrowth": 1.8
+    },
+    "innateSkillId": "skill_flame_burst",
+    "avatar": "🔥",
+    "desc": "地脉烈焰中觉醒的成年火元素，周身燃烧着不灭的炽热熔火。"
+  },
+  {
+    "id": "pet_storm_elemental",
+    "name": "狂风雷灵",
+    "tier": 2,
+    "race": "ELEMENTAL",
+    "element": "THUNDER",
+    "baseHp": 360,
+    "baseAtk": 88,
+    "baseDef": 28,
+    "baseSpd": 135,
+    "growth": {
+      "hpGrowth": 27,
+      "atkGrowth": 7.8,
+      "defGrowth": 2.3,
+      "spdGrowth": 2.5
+    },
+    "innateSkillId": "skill_plasma_shock",
+    "avatar": "🌪️",
+    "desc": "狂风与天雷交融诞生的风暴元素，移动极速，攻势如狂风骤雨。"
+  },
+  {
+    "id": "pet_luminary_archon",
+    "name": "极耀天神灵",
+    "tier": 3,
+    "race": "ELEMENTAL",
+    "element": "LIGHT",
+    "baseHp": 1200,
+    "baseAtk": 225,
+    "baseDef": 105,
+    "baseSpd": 120,
+    "growth": {
+      "hpGrowth": 56.3,
+      "atkGrowth": 19.5,
+      "defGrowth": 6.7,
+      "spdGrowth": 2.3
+    },
+    "innateSkillId": "skill_divine_judgment",
+    "avatar": "☀️",
+    "desc": "高阶天界光之执政官，纯净能量体所化，掌管神圣惩戒法度。"
+  },
+  {
+    "id": "pet_skeleton_warrior",
+    "name": "骷髅战卒",
+    "tier": 1,
+    "race": "UNDEAD",
+    "element": "DARK",
+    "baseHp": 135,
+    "baseAtk": 24,
+    "baseDef": 15,
+    "baseSpd": 90,
+    "growth": {
+      "hpGrowth": 13,
+      "atkGrowth": 2.5,
+      "defGrowth": 1.5,
+      "spdGrowth": 0.9
+    },
+    "innateSkillId": "skill_bone_slash",
+    "avatar": "☠️",
+    "desc": "手持锈蚀骨剑的骷髅兵，虽无痛觉与灵魂，但服从号令至死不渝。"
+  },
+  {
+    "id": "pet_cursed_tombstone",
+    "name": "怨念墓碑",
+    "tier": 1,
+    "race": "UNDEAD",
+    "element": "WOOD",
+    "baseHp": 210,
+    "baseAtk": 12,
+    "baseDef": 26,
+    "baseSpd": 50,
+    "growth": {
+      "hpGrowth": 20.8,
+      "atkGrowth": 1.6,
+      "defGrowth": 2.2,
+      "spdGrowth": 0.5
+    },
+    "innateSkillId": "skill_soul_ward",
+    "avatar": "🪦",
+    "desc": "被死者执念寄宿的古墓青石碑，坚固无比并散发沉重怨气。"
+  },
+  {
+    "id": "pet_ghost_lantern",
+    "name": "冥火鬼灯",
+    "tier": 1,
+    "race": "UNDEAD",
+    "element": "FIRE",
+    "baseHp": 110,
+    "baseAtk": 28,
+    "baseDef": 11,
+    "baseSpd": 100,
+    "growth": {
+      "hpGrowth": 13,
+      "atkGrowth": 2.9,
+      "defGrowth": 1.1,
+      "spdGrowth": 0.9
+    },
+    "innateSkillId": "skill_phantom_fire",
+    "avatar": "🏮",
+    "desc": "漂浮于幽暗墓园的引魂灯，芯中燃烧着幽绿色的冷焰。"
+  },
+  {
+    "id": "pet_frost_wraith",
+    "name": "冻死怨魂",
+    "tier": 1,
+    "race": "UNDEAD",
+    "element": "WATER",
+    "baseHp": 120,
+    "baseAtk": 27,
+    "baseDef": 12,
+    "baseSpd": 98,
+    "growth": {
+      "hpGrowth": 13,
+      "atkGrowth": 2.8,
+      "defGrowth": 1.2,
+      "spdGrowth": 0.9
+    },
+    "innateSkillId": "skill_frost_chill",
+    "avatar": "👻",
+    "desc": "在极地暴风雪中死去的旅者灵魂，触碰其躯体将使血液凝固。"
+  },
+  {
+    "id": "pet_lich_apprentice",
+    "name": "死灵术士",
+    "tier": 2,
+    "race": "UNDEAD",
+    "element": "DARK",
+    "baseHp": 390,
+    "baseAtk": 82,
+    "baseDef": 35,
+    "baseSpd": 105,
+    "growth": {
+      "hpGrowth": 31.2,
+      "atkGrowth": 6.5,
+      "defGrowth": 3,
+      "spdGrowth": 1.3
+    },
+    "innateSkillId": "skill_soul_harvest",
+    "avatar": "🧙‍♂️",
+    "desc": "掌握禁忌通灵秘术的黑暗施法者，擅长操纵尸骸与衰弱诅咒。"
+  },
+  {
+    "id": "pet_vampire_bat",
+    "name": "嗜血夜蝠",
+    "tier": 2,
+    "race": "UNDEAD",
+    "element": "DARK",
+    "baseHp": 410,
+    "baseAtk": 76,
+    "baseDef": 32,
+    "baseSpd": 130,
+    "growth": {
+      "hpGrowth": 33,
+      "atkGrowth": 6.5,
+      "defGrowth": 3,
+      "spdGrowth": 1.3
+    },
+    "innateSkillId": "skill_blood_drain",
+    "avatar": "🦇",
+    "desc": "饮用古老吸血鬼血液发生异变的魔蝠，攻击必定附带高额吸血。"
+  },
+  {
+    "id": "pet_spectral_banshee",
+    "name": "幽泣女妖",
+    "tier": 2,
+    "race": "UNDEAD",
+    "element": "WATER",
+    "baseHp": 430,
+    "baseAtk": 78,
+    "baseDef": 36,
+    "baseSpd": 115,
+    "growth": {
+      "hpGrowth": 34,
+      "atkGrowth": 6.5,
+      "defGrowth": 3,
+      "spdGrowth": 1.3
+    },
+    "innateSkillId": "skill_banshee_wail",
+    "avatar": "🧝‍♀️",
+    "desc": "发出凄厉哀嚎的怨灵女妖，尖叫声能穿透心灵摧毁敌人的意志。"
+  },
+  {
+    "id": "pet_lich_king",
+    "name": "不朽巫妖王",
+    "tier": 3,
+    "race": "UNDEAD",
+    "element": "DARK",
+    "baseHp": 1180,
+    "baseAtk": 220,
+    "baseDef": 110,
+    "baseSpd": 115,
+    "growth": {
+      "hpGrowth": 83,
+      "atkGrowth": 14.4,
+      "defGrowth": 9.5,
+      "spdGrowth": 1.8
+    },
+    "innateSkillId": "skill_nether_nova",
+    "avatar": "👑",
+    "desc": "跨越生死界限的永生施法领主，手握亡者法杖，能唤起无尽死亡天灾。"
+  },
+  {
+    "id": "pet_hades_grim_reaper",
+    "name": "冥府死神·塔纳托斯",
+    "tier": 4,
+    "race": "UNDEAD",
+    "element": "DARK",
+    "baseHp": 2250,
+    "baseAtk": 410,
+    "baseDef": 180,
+    "baseSpd": 150,
+    "growth": {
+      "hpGrowth": 150,
+      "atkGrowth": 23.4,
+      "defGrowth": 16,
+      "spdGrowth": 2.5
+    },
+    "innateSkillId": "skill_reaper_scythe",
+    "avatar": "🪦",
+    "desc": "主宰万物终结的冥界死神，挥舞漆黑神镰，任何生命在其面前均只有终结宿命！"
+  },
+  {
+    "id": "pet_clockwork_scout",
+    "name": "发条斥候",
+    "tier": 1,
+    "race": "MECHANIC",
+    "element": "THUNDER",
+    "baseHp": 110,
+    "baseAtk": 26,
+    "baseDef": 14,
+    "baseSpd": 110,
+    "growth": {
+      "hpGrowth": 11,
+      "atkGrowth": 2.7,
+      "defGrowth": 1.4,
+      "spdGrowth": 1.4
+    },
+    "innateSkillId": "skill_gear_strike",
+    "avatar": "🤖",
+    "desc": "失落古代工坊量产的小型发条侦察机，移动灵活发条咬合精准。"
+  },
+  {
+    "id": "pet_steam_beetle",
+    "name": "蒸汽重甲甲虫",
+    "tier": 1,
+    "race": "MECHANIC",
+    "element": "FIRE",
+    "baseHp": 180,
+    "baseAtk": 18,
+    "baseDef": 22,
+    "baseSpd": 70,
+    "growth": {
+      "hpGrowth": 16,
+      "atkGrowth": 1.9,
+      "defGrowth": 2.4,
+      "spdGrowth": 0.8
+    },
+    "innateSkillId": "skill_steam_vent",
+    "avatar": "🪲",
+    "desc": "搭载微型蒸汽锅炉的机械甲虫，背部排气孔能喷出灼热蒸汽防卫。"
+  },
+  {
+    "id": "pet_iron_drill_mole",
+    "name": "铁钻矿工机",
+    "tier": 1,
+    "race": "MECHANIC",
+    "element": "WOOD",
+    "baseHp": 170,
+    "baseAtk": 23,
+    "baseDef": 19,
+    "baseSpd": 75,
+    "growth": {
+      "hpGrowth": 16,
+      "atkGrowth": 2.2,
+      "defGrowth": 2.1,
+      "spdGrowth": 0.9
+    },
+    "innateSkillId": "skill_drill_thrust",
+    "avatar": "🚜",
+    "desc": "配备合金高转速钻头的地底挖掘机甲，能轻易撕裂坚硬岩壁。"
+  },
+  {
+    "id": "pet_hydro_drone",
+    "name": "水压清洗机",
+    "tier": 1,
+    "race": "MECHANIC",
+    "element": "WATER",
+    "baseHp": 125,
+    "baseAtk": 25,
+    "baseDef": 13,
+    "baseSpd": 105,
+    "growth": {
+      "hpGrowth": 12,
+      "atkGrowth": 2.6,
+      "defGrowth": 1.3,
+      "spdGrowth": 1.4
+    },
+    "innateSkillId": "skill_hydro_jet",
+    "avatar": "🚁",
+    "desc": "古代城市管道巡检无人机，内置高压水炮喷射系统。"
+  },
+  {
+    "id": "pet_solar_battery_bot",
+    "name": "聚光充能机",
+    "tier": 1,
+    "race": "MECHANIC",
+    "element": "LIGHT",
+    "baseHp": 130,
+    "baseAtk": 22,
+    "baseDef": 16,
+    "baseSpd": 95,
+    "growth": {
+      "hpGrowth": 13,
+      "atkGrowth": 2.3,
+      "defGrowth": 1.6,
+      "spdGrowth": 1.2
+    },
+    "innateSkillId": "skill_solar_beam",
+    "avatar": "☀️",
+    "desc": "展开太阳能光帆浮空采光的小型机械，储存神圣光能。"
+  },
+  {
+    "id": "pet_steam_golem",
+    "name": "蒸汽重装巨像",
+    "tier": 2,
+    "race": "MECHANIC",
+    "element": "FIRE",
+    "baseHp": 560,
+    "baseAtk": 70,
+    "baseDef": 55,
+    "baseSpd": 70,
+    "growth": {
+      "hpGrowth": 36,
+      "atkGrowth": 6,
+      "defGrowth": 4.8,
+      "spdGrowth": 1
+    },
+    "innateSkillId": "skill_magma_slam",
+    "avatar": "⚙️",
+    "desc": "轰鸣运转的重工业蒸汽巨像，钢铁铸就的身躯具备压倒性的撼地吨位。"
+  },
+  {
+    "id": "pet_tesla_walker",
+    "name": "特斯拉四足机甲",
+    "tier": 2,
+    "race": "MECHANIC",
+    "element": "THUNDER",
+    "baseHp": 420,
+    "baseAtk": 82,
+    "baseDef": 40,
+    "baseSpd": 115,
+    "growth": {
+      "hpGrowth": 33,
+      "atkGrowth": 7.3,
+      "defGrowth": 3.4,
+      "spdGrowth": 2
+    },
+    "innateSkillId": "skill_lightning_strike",
+    "avatar": "🤖",
+    "desc": "搭载特斯拉线圈的四足战斗机兵，所过之处电网轰鸣充盈。"
+  },
+  {
+    "id": "pet_nano_repair_swarm",
+    "name": "纳米自愈蜂群",
+    "tier": 2,
+    "race": "MECHANIC",
+    "element": "LIGHT",
+    "baseHp": 460,
+    "baseAtk": 55,
+    "baseDef": 52,
+    "baseSpd": 100,
+    "growth": {
+      "hpGrowth": 36,
+      "atkGrowth": 4.8,
+      "defGrowth": 4.6,
+      "spdGrowth": 1.5
+    },
+    "innateSkillId": "skill_nano_repair",
+    "avatar": "🐝",
+    "desc": "由数十万枚微型机械单元构成的聚合体，能以极高效率重组与修复生命。"
+  },
+  {
+    "id": "pet_stealth_assassin_bot",
+    "name": "幽灵暗杀机兵",
+    "tier": 2,
+    "race": "MECHANIC",
+    "element": "DARK",
+    "baseHp": 380,
+    "baseAtk": 86,
+    "baseDef": 30,
+    "baseSpd": 135,
+    "growth": {
+      "hpGrowth": 30,
+      "atkGrowth": 7.6,
+      "defGrowth": 3.4,
+      "spdGrowth": 2
+    },
+    "innateSkillId": "skill_plasma_cut",
+    "avatar": "🦾",
+    "desc": "采用光线偏折隐形合金的刺客型机器人，手刃附带高频振动刀刃。"
+  },
+  {
+    "id": "pet_fortress_dreadnought",
+    "name": "陆行要塞无畏舰",
+    "tier": 3,
+    "race": "MECHANIC",
+    "element": "THUNDER",
+    "baseHp": 1600,
+    "baseAtk": 195,
+    "baseDef": 150,
+    "baseSpd": 75,
+    "growth": {
+      "hpGrowth": 75,
+      "atkGrowth": 16,
+      "defGrowth": 12.8,
+      "spdGrowth": 1.6
+    },
+    "innateSkillId": "skill_artillery_barrage",
+    "avatar": "🛸",
+    "desc": "超重型装甲要塞核心，搭载多联装离子巨炮与全向能量偏转护盾！"
+  },
+  {
+    "id": "pet_chronos_perpetual_core",
+    "name": "时之天轨·永动机神",
+    "tier": 4,
+    "race": "MECHANIC",
+    "element": "LIGHT",
+    "baseHp": 2500,
+    "baseAtk": 390,
+    "baseDef": 210,
+    "baseSpd": 140,
+    "growth": {
+      "hpGrowth": 130,
+      "atkGrowth": 27.3,
+      "defGrowth": 19,
+      "spdGrowth": 2.7
+    },
+    "innateSkillId": "skill_infinity_drive",
+    "avatar": "🪐",
+    "desc": "突破热力学法则的终极人造创世奇迹，拥有无限能源矩阵与扭曲时空演算力！"
   }
 ]

@@ -31,6 +31,7 @@ export class BattleEngine {
       unit.buffs = [];
       unit.shield = unit.shield || 0;
       unit.isDead = false;
+      unit.currentHp = unit.maxHp;
 
       const basicIdx = unit.skills.indexOf('skill_basic_strike');
       if (basicIdx > -1) {
@@ -64,9 +65,6 @@ export class BattleEngine {
 
     this.addLog('系统', '战斗开始！', 'INFO');
     this.advanceToNextTurn();
-
-    // 如果先手是敌方，自动执行敌方行动直至玩家回合
-    this.runAiTurns();
   }
 
   /**
@@ -168,13 +166,21 @@ export class BattleEngine {
             }
             t.currentHp = Math.max(0, t.currentHp - finalDmg);
             
+            const elemText = res.elementalRelation === 'STRONG'
+              ? ` (⚡属性克制 x${res.elementalMultiplier})`
+              : res.elementalRelation === 'WEAK'
+              ? ` (🛡️属性被克 x${res.elementalMultiplier})`
+              : '';
+
             this.addLog(
               actor.name, 
-              `施展【${skill.name}】对 [${t.name}] 造成 ${res.finalDamage} 点伤害${res.isCrit ? ' 💥暴击!' : ''}`,
+              `施展【${skill.name}】对 [${t.name}] 造成 ${res.finalDamage} 点伤害${res.isCrit ? ' 💥暴击!' : ''}${elemText}`,
               'DAMAGE',
               t.name,
               res.finalDamage,
-              res.isCrit
+              res.isCrit,
+              res.elementalRelation,
+              res.elementalMultiplier
             );
 
             // 检查反弹/反击伤害
@@ -457,15 +463,19 @@ export class BattleEngine {
   public executeEnemyAction(enemy: BattleUnit): boolean {
     if (enemy.isDead) return false;
 
-    // 挑选可用且能量充足的技能，不足则降级为基础普攻
-    let skillId = enemy.skills.find(sId => {
-      const s = this.skillsMap.get(sId);
-      if (!s) return false;
-      if (s.costMp && enemy.currentMp < s.costMp) return false;
-      return true;
-    }) || 'skill_basic_strike';
+    // 怪物随机挑选可用且能量充足的技能
+    const availableSkills = enemy.skills
+      .map(sId => this.skillsMap.get(sId))
+      .filter((s): s is SkillConfig => {
+        if (!s) return false;
+        if (s.costMp && enemy.maxMp > 0 && enemy.currentMp < s.costMp) return false;
+        return true;
+      });
 
-    let skill = this.skillsMap.get(skillId) || this.skillsMap.get('skill_basic_strike');
+    const skill = availableSkills.length > 0
+      ? availableSkills[Math.floor(Math.random() * availableSkills.length)]
+      : (this.skillsMap.get('skill_basic_strike') || this.skillsMap.get(enemy.skills[0])!);
+
     if (!skill) return false;
 
     const validTargets = this.getValidTargets(enemy, skill);
@@ -544,7 +554,16 @@ export class BattleEngine {
     return this.playerTeam.some(u => u.id === unit.id);
   }
 
-  private addLog(sourceName: string, message: string, type: BattleLogEntry['type'], targetName?: string, damage?: number, isCrit?: boolean): void {
+  private addLog(
+    sourceName: string, 
+    message: string, 
+    type: BattleLogEntry['type'], 
+    targetName?: string, 
+    damage?: number, 
+    isCrit?: boolean,
+    elementalRelation?: 'STRONG' | 'WEAK' | 'NEUTRAL',
+    elementalMultiplier?: number
+  ): void {
     this.logs.unshift({
       turn: this.turnCount,
       sourceName,
@@ -552,6 +571,8 @@ export class BattleEngine {
       targetName,
       damage,
       isCrit,
+      elementalRelation,
+      elementalMultiplier,
       message,
       type
     });

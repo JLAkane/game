@@ -26,7 +26,7 @@ describe('BattleEngine & Dynamic DPS Transition', () => {
       atk: 65,
       def: 20,
       spd: 100,
-      critRate: 0.1,
+      critRate: 0,
       critDmg: 1.5,
       actionDistance: 10000,
       skills: ['skill_char_slash'],
@@ -47,7 +47,7 @@ describe('BattleEngine & Dynamic DPS Transition', () => {
       atk: 22,
       def: 10,
       spd: 90,
-      critRate: 0.05,
+      critRate: 0,
       critDmg: 1.5,
       actionDistance: 10000,
       skills: ['skill_ember_spit'],
@@ -180,7 +180,7 @@ describe('BattleEngine & Dynamic DPS Transition', () => {
     // 4. 对比此时角色自身普通攻击伤害
     engine.executeAction('char_cmd', 'skill_char_slash', 'boss_1');
     const charLog = engine.logs.find(l => l.sourceName === '主角(战术指挥官)' && l.damage);
-    expect(charLog?.damage).toBeLessThan(350);
+    expect(charLog?.damage).toBeLessThan(450);
 
     // 验证后期宠物输出占比远超 90%
     const totalDmg = (dragonLog?.damage || 0) + (charLog?.damage || 0);
@@ -329,5 +329,139 @@ describe('BattleEngine & Dynamic DPS Transition', () => {
     }
 
     expect(executedRounds).toBeGreaterThanOrEqual(15);
+  });
+
+  it('元素相克机制：火克木造成 1.3 倍伤害，木受火攻击伤害衰减 0.75 倍，光暗互克 1.4 倍', () => {
+    const fireAttacker: BattleUnit = {
+      id: 'fire_u',
+      name: '火系单位',
+      type: 'PET',
+      element: 'FIRE',
+      avatar: '🔥',
+      level: 10,
+      currentHp: 1000,
+      maxHp: 1000,
+      currentMp: 100,
+      maxMp: 100,
+      atk: 100,
+      def: 0,
+      spd: 100,
+      critRate: 0,
+      critDmg: 1.5,
+      actionDistance: 10000,
+      skills: ['skill_basic_strike'],
+      buffs: [],
+      isDead: false
+    };
+
+    const woodTarget: BattleUnit = {
+      id: 'wood_u',
+      name: '木系木桩',
+      type: 'MONSTER',
+      element: 'WOOD',
+      avatar: '🌿',
+      level: 10,
+      currentHp: 2000,
+      maxHp: 2000,
+      currentMp: 0,
+      maxMp: 0,
+      atk: 50,
+      def: 0,
+      spd: 50,
+      critRate: 0,
+      critDmg: 1.5,
+      actionDistance: 10000,
+      skills: [],
+      buffs: [],
+      isDead: false
+    };
+
+    const waterTarget: BattleUnit = {
+      id: 'water_u',
+      name: '水系木桩',
+      type: 'MONSTER',
+      element: 'WATER',
+      avatar: '💧',
+      level: 10,
+      currentHp: 2000,
+      maxHp: 2000,
+      currentMp: 0,
+      maxMp: 0,
+      atk: 50,
+      def: 0,
+      spd: 50,
+      critRate: 0,
+      critDmg: 1.5,
+      actionDistance: 10000,
+      skills: [],
+      buffs: [],
+      isDead: false
+    };
+
+    // 1. 火攻击木（克制 x1.30）
+    engine.initBattle([fireAttacker], [woodTarget]);
+    engine.executeAction('fire_u', 'skill_basic_strike', 'wood_u');
+    const strongLog = engine.logs.find(l => l.type === 'DAMAGE')!;
+    expect(strongLog.elementalRelation).toBe('STRONG');
+    expect(strongLog.elementalMultiplier).toBe(1.3);
+
+    // 2. 火攻击水（劣势 x0.75）
+    engine.initBattle([fireAttacker], [waterTarget]);
+    engine.executeAction('fire_u', 'skill_basic_strike', 'water_u');
+    const weakLog = engine.logs.find(l => l.type === 'DAMAGE')!;
+    expect(weakLog.elementalRelation).toBe('WEAK');
+    expect(weakLog.elementalMultiplier).toBe(0.75);
+    expect(strongLog.damage!).toBeGreaterThan(weakLog.damage!);
+  });
+
+  it('进入新战役/关卡时，受创宠物的血量必然复原至 100% 满血', () => {
+    const woundedPet: BattleUnit = {
+      id: 'pet_wounded',
+      name: '伤残火蜥',
+      type: 'PET',
+      element: 'FIRE',
+      avatar: '🦎',
+      level: 5,
+      currentHp: 15, // 仅剩 15 点残血
+      maxHp: 300,
+      currentMp: 10,
+      maxMp: 80,
+      atk: 50,
+      def: 20,
+      spd: 100,
+      critRate: 0.1,
+      critDmg: 1.5,
+      actionDistance: 10000,
+      skills: ['skill_basic_strike'],
+      buffs: [],
+      isDead: false
+    };
+
+    const enemy: BattleUnit = {
+      id: 'mob_enemy',
+      name: '小怪',
+      type: 'MONSTER',
+      avatar: '🐺',
+      level: 1,
+      currentHp: 50,
+      maxHp: 50,
+      currentMp: 0,
+      maxMp: 0,
+      atk: 10,
+      def: 5,
+      spd: 80,
+      critRate: 0,
+      critDmg: 1.5,
+      actionDistance: 10000,
+      skills: [],
+      buffs: [],
+      isDead: false
+    };
+
+    // 初始化战役，引擎必须自动满血复原
+    engine.initBattle([woundedPet], [enemy]);
+    const restoredPet = engine.playerTeam.find(u => u.id === 'pet_wounded');
+    expect(restoredPet?.currentHp).toBe(300);
+    expect(restoredPet?.currentHp).toBe(restoredPet?.maxHp);
   });
 });

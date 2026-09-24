@@ -47,7 +47,8 @@ export interface PetInstance {
   critDmg: number;  // 基础 1.5 (150%)
   growth: GrowthRate;
   innateSkillId: string;
-  skills: string[]; // 习得技能 ID 列表 (最多 6 个)
+  skills: string[]; // 已习得技能 ID 列表（技能库）
+  equippedSkills?: string[]; // 携带的战斗技能 ID 列表 (上限 4 个)
   traits: string[]; // 突变被动特性
   generation: number;
 }
@@ -172,6 +173,7 @@ export interface BattleUnit {
   buffs: BuffInstance[];
   shield?: number; // 护盾值
   isDead: boolean;
+  element?: ElementType;
   petRef?: PetInstance;
 }
 
@@ -182,6 +184,103 @@ export interface BattleLogEntry {
   targetName?: string;
   damage?: number;
   isCrit?: boolean;
+  elementalRelation?: 'STRONG' | 'WEAK' | 'NEUTRAL';
+  elementalMultiplier?: number;
   message: string;
   type: 'INFO' | 'DAMAGE' | 'HEAL' | 'BUFF' | 'DEBUFF' | 'COMMAND' | 'DEATH';
 }
+
+// 宠物蛋物品定义
+export type EggTier = 1 | 2 | 3 | 4; // T1(普通), T2(珍稀), T3(史诗), T4(传说/神话)
+
+export interface PetEggItem {
+  id: string;             // 物品唯一实例 ID
+  tier: EggTier;          // 蛋品质
+  name: string;           // 蛋名称
+  desc: string;           // 描述
+  avatar: string;         // 图标
+  sourceStageName: string;// 掉落来源
+  dropTime: number;       // 获得时间
+}
+
+export interface EggDropConfig {
+  tier: EggTier;
+  rate: number;                   // 掉落概率 0~1 (如 0.5 = 50%)
+  firstClearGuaranteed?: boolean; // 首次通关是否 100% 必定掉落
+}
+
+// 关卡、奖励与经验成长相关定义
+export interface StageReward {
+  gold: number;                 // 常规通关金币
+  firstClearGoldBonus: number;  // 首次通关额外赠送金币
+  exp: number;                  // 角色与宠物通关获得经验
+  eggDrop?: EggDropConfig;      // 宠物蛋掉落配置
+}
+
+export interface StageConfig {
+  id: string;
+  chapter: number;              // 章节 (1: 边境荒野, 2: 古代遗迹, 3: 龙语苍穹)
+  chapterName: string;
+  name: string;                 // 关卡名称
+  desc: string;                 // 关卡情报描述
+  recommendedLevel: number;
+  enemies: BattleUnit[];        // 敌方预设阵容
+  rewards: StageReward;
+}
+
+export interface LevelUpReport {
+  unitId: string;
+  name: string;
+  isCharacter: boolean;
+  oldLevel: number;
+  newLevel: number;
+  hpGained: number;
+  atkGained: number;
+  defGained: number;
+  spdGained: number;
+  newMaxHp: number;
+  newAtk: number;
+  newDef: number;
+  newSpd: number;
+  unlockedClass?: boolean; // 是否解锁职业（升入 Lv.10）
+}
+
+export interface StageVictoryReward {
+  goldGained: number;
+  isFirstClear: boolean;
+  expGained: number;
+  levelUpReports: LevelUpReport[];
+  newlyUnlockedSkills?: { skillId: string; unlockLevel: number }[];
+  droppedEgg?: PetEggItem;
+}
+
+export interface PlayerProfile {
+  gold: number;
+  characterLevel: number;
+  characterExp: number;
+  clearedStageIds: string[];
+  activeClassId?: ClassType;
+  equippedSkillIds: string[];
+}
+
+// 商城与背包道具相关定义
+export type ShopCategory = 'PET_EGGS' | 'CONSUMABLES' | 'SKILL_SCROLLS';
+
+export interface ItemEffect {
+  type: 'ADD_EGG' | 'ADD_EXP' | 'REROLL_GROWTH' | 'UNLOCK_SKILL';
+  eggTier?: EggTier;
+  expValue?: number;
+  skillId?: string;
+}
+
+export interface ShopItemConfig {
+  id: string;
+  name: string;
+  category: ShopCategory;
+  tier: 1 | 2 | 3 | 4;
+  price: number;
+  icon: string;
+  description: string;
+  effect: ItemEffect;
+}
+

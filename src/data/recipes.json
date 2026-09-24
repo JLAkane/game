@@ -5,28 +5,140 @@
       "parentB": "pet_rock_turtle",
       "childId": "pet_magma_behemoth",
       "tier": 2,
-      "desc": "火尾蜥 + 岩壳龟 = 熔岩巨兽 (T2 稀有)"
+      "desc": "火尾蜥 + 岩壳龟 ➜ 熔岩巨兽 (进阶血脉)"
     },
     {
       "parentA": "pet_storm_falcon",
       "parentB": "pet_fire_lizard",
       "childId": "pet_thunder_griffon",
       "tier": 2,
-      "desc": "暴风隼 + 火尾蜥 = 雷霆狮鹫 (T2 稀有)"
+      "desc": "暴风隼 + 火尾蜥 ➜ 雷霆狮鹫 (进阶血脉)"
     },
     {
       "parentA": "pet_spectral_wisp",
       "parentB": "pet_bone_hound",
       "childId": "pet_death_knight",
       "tier": 2,
-      "desc": "冰霜幽魂 + 骸骨恶犬 = 冥骸骑士 (T2 稀有)"
+      "desc": "冰霜幽魂 + 骸骨恶犬 ➜ 冥骸骑士 (进阶血脉)"
+    },
+    {
+      "parentA": "pet_clockwork_scout",
+      "parentB": "pet_steam_beetle",
+      "childId": "pet_steam_golem",
+      "tier": 2,
+      "desc": "发条斥候 + 蒸汽重甲甲虫 ➜ 蒸汽重装巨像 (进阶血脉)"
+    },
+    {
+      "parentA": "pet_skeleton_warrior",
+      "parentB": "pet_ghost_lantern",
+      "childId": "pet_lich_apprentice",
+      "tier": 2,
+      "desc": "骷髅战卒 + 冥火鬼灯 ➜ 死灵术士 (进阶血脉)"
+    },
+    {
+      "parentA": "pet_drake_hatchling",
+      "parentB": "pet_spark_drake",
+      "childId": "pet_emerald_drake",
+      "tier": 2,
+      "desc": "炽火幼龙 + 闪电飞龙 ➜ 翡翠角龙 (进阶血脉)"
+    },
+    {
+      "parentA": "pet_azure_drake",
+      "parentB": "pet_cinder_spirit",
+      "childId": "pet_ocean_serpent",
+      "tier": 2,
+      "desc": "碧水幼龙 + 烬火微灵 ➜ 海潮蛟龙 (进阶血脉)"
+    },
+    {
+      "parentA": "pet_stone_golem",
+      "parentB": "pet_rock_turtle",
+      "childId": "pet_emerald_treant",
+      "tier": 2,
+      "desc": "泥岩石灵 + 岩壳龟 ➜ 翡翠古树 (进阶血脉)"
+    },
+    {
+      "parentA": "pet_light_fairy",
+      "parentB": "pet_storm_falcon",
+      "childId": "pet_aurora_unicorn",
+      "tier": 2,
+      "desc": "耀光微仙 + 暴风隼 ➜ 极光独角兽 (进阶血脉)"
     },
     {
       "parentA": "pet_magma_behemoth",
       "parentB": "pet_thunder_griffon",
       "childId": "pet_hellfire_dragon",
       "tier": 3,
-      "desc": "熔岩巨兽 + 雷霆狮鹫 = 狱火炎龙 (T3 史诗)"
+      "desc": "熔岩巨兽 + 雷霆狮鹫 ➜ 狱火炎龙 (史诗真灵)"
+    },
+    {
+      "parentA": "pet_emerald_treant",
+      "parentB": "pet_ocean_serpent",
+      "childId": "pet_abyssal_titan",
+      "tier": 3,
+      "desc": "翡翠古树 + 海潮蛟龙 ➜ 深渊巨神 (史诗真灵)"
+    },
+    {
+      "parentA": "pet_thunder_griffon",
+      "parentB": "pet_emerald_drake",
+      "childId": "pet_storm_dragon",
+      "tier": 3,
+      "desc": "雷霆狮鹫 + 翡翠角龙 ➜ 极电苍龙 (史诗真灵)"
+    },
+    {
+      "parentA": "pet_aurora_unicorn",
+      "parentB": "pet_radiant_dragon",
+      "childId": "pet_celestial_pegasus",
+      "tier": 3,
+      "desc": "极光独角兽 + 辉光圣龙 ➜ 天界圣马 (史诗真灵)"
+    },
+    {
+      "parentA": "pet_steam_golem",
+      "parentB": "pet_iron_drill_mole",
+      "childId": "pet_fortress_dreadnought",
+      "tier": 3,
+      "desc": "蒸汽重装巨像 + 钢铁钻地鼹鼠 ➜ 陆行要塞无畏舰 (史诗真灵)"
+    },
+    {
+      "parentA": "pet_death_knight",
+      "parentB": "pet_vampire_bat",
+      "childId": "pet_lich_king",
+      "tier": 3,
+      "desc": "冥骸骑士 + 嗜血夜蝠 ➜ 不朽巫妖王 (史诗真灵)"
+    },
+    {
+      "parentA": "pet_fortress_dreadnought",
+      "parentB": "pet_radiant_dragon",
+      "childId": "pet_chronos_perpetual_core",
+      "tier": 4,
+      "desc": "陆行要塞无畏舰 + 辉光圣龙 ➜ 时之天轨·永动机神 (神话远古)"
+    },
+    {
+      "parentA": "pet_lich_king",
+      "parentB": "pet_abyssal_titan",
+      "childId": "pet_hades_grim_reaper",
+      "tier": 4,
+      "desc": "不朽巫妖王 + 深渊巨神 ➜ 冥府死神·塔纳托斯 (神话远古)"
+    },
+    {
+      "parentA": "pet_hellfire_dragon",
+      "parentB": "pet_celestial_pegasus",
+      "childId": "pet_solaris_phoenix",
+      "tier": 4,
+      "desc": "狱火炎龙 + 天界圣马 ➜ 太阳神不死鸟 (神话远古)"
+    },
+    {
+      "parentA": "pet_storm_dragon",
+      "parentB": "pet_chronos_perpetual_core",
+      "childId": "pet_ouroboros_dragon",
+      "tier": 4,
+      "desc": "极电苍龙 + 时之天轨·永动机神 ➜ 衔尾始祖神龙 (神话远古)"
+    },
+    {
+      "parentA": "pet_lich_king",
+      "parentB": "pet_stealth_assassin_bot",
+      "childId": "pet_genesis_void_lord",
+      "tier": 4,
+      "desc": "不朽巫妖王 + 隐形幽灵暗杀机兵 ➜ 创世虚空领主 (神话远古)"
     }
   ],
   "genericRaceMatrix": [
@@ -34,7 +146,17 @@
     { "raceA": "BEAST", "raceB": "DRAGON", "resultRace": "DRAGON" },
     { "raceA": "BEAST", "raceB": "ELEMENTAL", "resultRace": "BEAST" },
     { "raceA": "BEAST", "raceB": "UNDEAD", "resultRace": "UNDEAD" },
+    { "raceA": "BEAST", "raceB": "MECHANIC", "resultRace": "MECHANIC" },
+    { "raceA": "DRAGON", "raceB": "DRAGON", "resultRace": "DRAGON" },
+    { "raceA": "DRAGON", "raceB": "ELEMENTAL", "resultRace": "DRAGON" },
+    { "raceA": "DRAGON", "raceB": "UNDEAD", "resultRace": "DRAGON" },
+    { "raceA": "DRAGON", "raceB": "MECHANIC", "resultRace": "MECHANIC" },
+    { "raceA": "ELEMENTAL", "raceB": "ELEMENTAL", "resultRace": "ELEMENTAL" },
     { "raceA": "ELEMENTAL", "raceB": "UNDEAD", "resultRace": "UNDEAD" },
-    { "raceA": "DRAGON", "raceB": "DRAGON", "resultRace": "DRAGON" }
+    { "raceA": "ELEMENTAL", "raceB": "MECHANIC", "resultRace": "MECHANIC" },
+    { "raceA": "UNDEAD", "raceB": "UNDEAD", "resultRace": "UNDEAD" },
+    { "raceA": "UNDEAD", "raceB": "MECHANIC", "resultRace": "UNDEAD" },
+    { "raceA": "MECHANIC", "raceB": "MECHANIC", "resultRace": "MECHANIC" }
   ]
 }
+
